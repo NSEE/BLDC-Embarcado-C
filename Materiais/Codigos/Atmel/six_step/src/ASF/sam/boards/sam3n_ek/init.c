@@ -49,6 +49,7 @@
 #include "conf_board.h"
 #include "gpio.h"
 #include "ioport.h"
+#include "six_step.h"
 
 void board_init(void)
 {
@@ -72,12 +73,10 @@ void board_init(void)
 	gpio_configure_pin(GPIO_PUSH_BUTTON_2, GPIO_PUSH_BUTTON_2_FLAGS);
 	
 	/*Configure Hall sensor*/
-	gpio_configure_pin(PIO_PA2_IDX, PIO_INPUT);
-	gpio_configure_pin(PIO_PA3_IDX, PIO_INPUT);
-	gpio_configure_pin(PIO_PA4_IDX, PIO_INPUT);
-	
-	
-	
+	gpio_configure_pin(PIN_HALL_1, PIN_HALL_1_TYPE);
+	gpio_configure_pin(PIN_HALL_2, PIN_HALL_2_TYPE);
+	gpio_configure_pin(PIN_HALL_3, PIN_HALL_3_TYPE);
+
 
 #ifdef CONF_BOARD_UART_CONSOLE
 	/* Configure UART pins */
@@ -95,12 +94,12 @@ void board_init(void)
 
 #ifdef CONF_BOARD_PWM_LED0
 	/* Configure PWM LED0 pin */
-	gpio_configure_pin(PIN_PWM_LED0_GPIO, PIN_PWM_LED0_FLAGS);
+	gpio_configure_pin(PIN_PWM_IN1_GPIO, PIN_PWM_IN1_FLAGS);
 #endif
 
 #ifdef CONF_BOARD_PWM_LED1
 	/* Configure PWM LED1 pin */
-	gpio_configure_pin(PIN_PWM_LED1_GPIO, PIN_PWM_LED1_FLAGS);
+	gpio_configure_pin(PIN_PWM_IN2_GPIO, PIN_PWM_IN2_FLAGS);
 #endif
 
 #ifdef CONF_BOARD_TWI0
