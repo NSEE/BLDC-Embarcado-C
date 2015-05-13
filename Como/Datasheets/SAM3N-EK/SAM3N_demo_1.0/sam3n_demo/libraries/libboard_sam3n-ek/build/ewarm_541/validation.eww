@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\libboard_sam3n-ek.ewp</path>
+  </project>
+  <batchBuild>
+    <batchDefinition>
+      <name>build_all</name>
+      <member>
+        <project>libboard_sam3n-ek</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>libboard_sam3n-ek</project>
+        <configuration>Release</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
+</workspace>
+
+

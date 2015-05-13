@@ -1,0 +1,43 @@
+*.autosave
+*.log
+
+# Ignores para Matlab
+*.asv
+*.m~
+*.mex*
+slprj/
+
+# Ignores para LaTeX
+*.aux
+*.glo
+*.idx
+*.log
+*.toc
+*.ist
+*.acn
+*.acr
+*.alg
+*.bbl
+*.blg
+*.dvi
+*.glg
+*.gls
+*.ilg
+*.ind
+*.lof
+*.lot
+*.maf
+*.mtc
+*.mtc1
+*.out
+*.synctex.gz
+
+# Ignores para Atmel sem utilidade de compartilhamento
+/Materiais/Codigos/Atmel/*
+#!/Materiais/Codigos/Atmel/six_step
+
+#/Materiais/Codigos/Atmel/six_step/*
+
+#!/Materiais/Codigos/Atmel/six_step/src
+#!/Materiais/Codigos/Atmel/six_step/six_step.atsln
+#!/Materiais/Codigos/Atmel/six_step/six_step.cproj
