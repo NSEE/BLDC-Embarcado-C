@@ -34,10 +34,10 @@ slprj/
 
 # Ignores para Atmel sem utilidade de compartilhamento
 /Materiais/Codigos/Atmel/*
-#!/Materiais/Codigos/Atmel/six_step
+!/Materiais/Codigos/Atmel/six_step
 
-#/Materiais/Codigos/Atmel/six_step/*
+/Materiais/Codigos/Atmel/six_step/*
 
-#!/Materiais/Codigos/Atmel/six_step/src
-#!/Materiais/Codigos/Atmel/six_step/six_step.atsln
-#!/Materiais/Codigos/Atmel/six_step/six_step.cproj
+!/Materiais/Codigos/Atmel/six_step/src
+!/Materiais/Codigos/Atmel/six_step/six_step.atsln
+!/Materiais/Codigos/Atmel/six_step/six_step.cproj
