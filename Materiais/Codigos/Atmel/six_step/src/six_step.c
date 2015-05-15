@@ -63,7 +63,7 @@ pwm_channel_t configure_pwm(void)
 	/* Period is left-aligned */
 	g_pwm_channel.alignment = PWM_ALIGN_LEFT;
 	/* Output waveform starts at a low level */
-	g_pwm_channel.polarity = PWM_LOW;
+	g_pwm_channel.polarity = PWM_HIGH;
 	/* Use PWM clock A as source clock */
 	g_pwm_channel.ul_prescaler = PWM_CMR_CPRE_CLKA;
 	/* Period value of output waveform */
@@ -78,7 +78,7 @@ pwm_channel_t configure_pwm(void)
 	
 	/* Initialize PWM channel for LED1 */
 	/* Period is center-aligned */
-	g_pwm_channel.alignment = PWM_ALIGN_CENTER;
+	g_pwm_channel.alignment = PWM_ALIGN_LEFT;
 	/* Output waveform starts at a high level */
 	g_pwm_channel.polarity = PWM_HIGH;
 	/* Use PWM clock A as source clock */
