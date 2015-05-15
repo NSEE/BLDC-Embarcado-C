@@ -1,6 +1,13 @@
 #ifndef _SIX_STEP_H_
 #define _SIX_STEP_H_
 
+#include "asf.h"
+#include "conf_board.h"
+#include "conf_clock.h"
+
+
+#define IRQ_PRIOR_PIO    0
+
 /* =============== Hall sensor =============== */
 
 #define PIN_HALL_1 PIO_PA2_IDX
@@ -38,10 +45,21 @@
 #define PIN_PWM_IN3_FLAGS   //(PIO_PERIPH_B | PIO_DEFAULT)
 #define PIN_PWM_IN3_CHANNEL //PWM_CHANNEL_0
 
-
-
+/* =============== PWM =============== */
+/** PWM frequency in Hz */
+#define PWM_FREQUENCY      1000
+/** Period value of PWM output waveform */
+#define PERIOD_VALUE       10
+/** Initial duty cycle value */
+#define INIT_DUTY_VALUE    0
 
 /* =============== Prototypes =============== */
 void Hall_Phase(void);
+void configure_hall(void);
+void configure_buttons(void);
+void Button1_Handler(uint32_t id, uint32_t mask);
+void Button2_Handler(uint32_t id, uint32_t mask);
+void Hall_Handler(uint32_t id, uint32_t mask);
+pwm_channel_t configure_pwm(void);
 
 #endif

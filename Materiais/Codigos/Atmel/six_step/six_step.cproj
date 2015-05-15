@@ -534,6 +534,12 @@
     <Compile Include="src\ASF\common\services\spi\sam_spi\spi_master.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\pwm_aux.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\pwm_aux.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\six_step.c">
       <SubType>compile</SubType>
     </Compile>
@@ -579,7 +585,7 @@
     <Compile Include="src\lcd_aux.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\main_six_step.c">
+    <Compile Include="src\main.c">
       <SubType>compile</SubType>
     </Compile>
     <None Include="src\asf.h">
