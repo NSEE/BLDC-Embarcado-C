@@ -47,9 +47,10 @@ pwm_channel_t configure_pwm(void)
 	/* Enable PWM peripheral clock */
 	pmc_enable_periph_clk(ID_PWM);
 	
-	/* Disable PWM channels for LEDs */
+	/* Disable PWM channels*/
 	pwm_channel_disable(PWM, PIN_PWM_IN1_CHANNEL); // channel 0
-	pwm_channel_disable(PWM, PIN_PWM_IN2_CHANNEL); // channel 3
+	pwm_channel_disable(PWM, PIN_PWM_IN2_CHANNEL); // channel 1
+	pwm_channel_disable(PWM, PIN_PWM_IN3_CHANNEL); // channel 2
 	
 	/* Set PWM clock A as PWM_FREQUENCY*PERIOD_VALUE (clock B is not used) */
 	pwm_clock_t clock_setting = {
@@ -59,7 +60,7 @@ pwm_channel_t configure_pwm(void)
 	};
 	pwm_init(PWM, &clock_setting);
 	
-	/* Initialize PWM channel for LED0 */
+	/* Initialize PWM channel for U1-2 */
 	/* Period is left-aligned */
 	g_pwm_channel.alignment = PWM_ALIGN_LEFT;
 	/* Output waveform starts at a low level */
@@ -76,7 +77,7 @@ pwm_channel_t configure_pwm(void)
 	/* Enable channel counter event interrupt */
 	pwm_channel_enable_interrupt(PWM, PIN_PWM_IN1_CHANNEL, 0);
 	
-	/* Initialize PWM channel for LED1 */
+	/* Initialize PWM channel for U2-3 */
 	/* Period is center-aligned */
 	g_pwm_channel.alignment = PWM_ALIGN_LEFT;
 	/* Output waveform starts at a high level */
@@ -94,15 +95,34 @@ pwm_channel_t configure_pwm(void)
 	/* Disable channel counter event interrupt */
 	pwm_channel_disable_interrupt(PWM, PIN_PWM_IN2_CHANNEL, 0);
 	
-	/* Configure interrupt and enable PWM interrupt */
-	NVIC_DisableIRQ(PWM_IRQn);
-	NVIC_ClearPendingIRQ(PWM_IRQn);
-	NVIC_SetPriority(PWM_IRQn, 0);
-	NVIC_EnableIRQ(PWM_IRQn);
+	/* Initialize PWM channel for U3-1 */
+	/* Period is center-aligned */
+	g_pwm_channel.alignment = PWM_ALIGN_LEFT;
+	/* Output waveform starts at a high level */
+	g_pwm_channel.polarity = PWM_HIGH;
+	/* Use PWM clock A as source clock */
+	g_pwm_channel.ul_prescaler = PWM_CMR_CPRE_CLKA;
+	/* Period value of output waveform */
+	g_pwm_channel.ul_period = PERIOD_VALUE;
+	/* Duty cycle value of output waveform */
+	g_pwm_channel.ul_duty = INIT_DUTY_VALUE;
+	g_pwm_channel.channel = PIN_PWM_IN3_CHANNEL;
+	
+	pwm_channel_init(PWM, &g_pwm_channel);
+	
+	/* Disable channel counter event interrupt */
+	pwm_channel_disable_interrupt(PWM, PIN_PWM_IN3_CHANNEL, 0);
+	
+	/* Configurar e habilitar interrupção do PWM*/
+	//NVIC_DisableIRQ(PWM_IRQn);
+	//NVIC_ClearPendingIRQ(PWM_IRQn);
+	//NVIC_SetPriority(PWM_IRQn, 0);
+	//NVIC_EnableIRQ(PWM_IRQn);
 	
 	/* Enable PWM channels for LEDs */
 	pwm_channel_enable(PWM, PIN_PWM_IN1_CHANNEL);
 	pwm_channel_enable(PWM, PIN_PWM_IN2_CHANNEL);
+	pwm_channel_enable(PWM, PIN_PWM_IN3_CHANNEL);
 	
 	return g_pwm_channel;
 }

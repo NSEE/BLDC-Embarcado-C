@@ -27,7 +27,7 @@ uint32_t hall_1 = 0;
 uint32_t hall_2 = 0;
 uint32_t hall_3 = 0;
 
-uint8_t phase_lcd = 0;
+uint8_t phase = 0;
 
 static uint8_t bt1 = 0;
 static uint8_t bt2 = 0;
@@ -43,41 +43,32 @@ void SPI_Handler(void)
 	ili9225_spi_handler();
 }
 
+
 void PWM_Handler(void)
 {
-	static uint32_t ul_count = 0;  /* PWM counter value */
+	//Para utilizar interrupção do pwm configurar e habilitar em six_step.c
 	
-	
-	uint32_t events = pwm_channel_get_interrupt_status(PWM);
-
-	/* Interrupt on PIN_PWM_IN1_CHANNEL */
-	if ((events & (1 << PIN_PWM_IN1_CHANNEL)) == (1 << PIN_PWM_IN1_CHANNEL))
-	{
-		ul_count++;
-
-		if (ul_count == (PWM_FREQUENCY / (PERIOD_VALUE - INIT_DUTY_VALUE))) {
-
-			/* Set new duty cycle */
-			ul_count = 0;
-			g_pwm_channel.channel = PIN_PWM_IN1_CHANNEL;
-			pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty);
-			g_pwm_channel.channel = PIN_PWM_IN2_CHANNEL;
-			pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty);
-		}
-	}
+	//static uint32_t ul_count = 0;  /* PWM counter value */
+	//uint32_t events = pwm_channel_get_interrupt_status(PWM);
+//
+	///* Interrupt on PIN_PWM_IN1_CHANNEL */
+	//if ((events & (1 << PIN_PWM_IN1_CHANNEL)) == (1 << PIN_PWM_IN1_CHANNEL))
+	//{
+		//ul_count++;
+		//if (ul_count == (PWM_FREQUENCY / (PERIOD_VALUE - INIT_DUTY_VALUE))) {
+			//ul_count = 0;
+		//}
+	//}
 }
 
 void Button1_Handler(uint32_t id, uint32_t mask)
 {
 	/*Botão 1 aumenta o duty cicle (ul_duty)*/
-	
 	if (PIN_PUSHBUTTON_1_ID == id && PIN_PUSHBUTTON_1_MASK == mask) {
 
 		if(ul_duty < PERIOD_VALUE) {
 			ul_duty++;
-
 			bt1++;
-			
 		}
 	}
 
@@ -86,38 +77,94 @@ void Button1_Handler(uint32_t id, uint32_t mask)
 void Button2_Handler(uint32_t id, uint32_t mask)
 {
 	/*Botão 2 diminui o duty cicle (ul_duty)*/
-
 	if (PIN_PUSHBUTTON_2_ID == id && PIN_PUSHBUTTON_2_MASK == mask) {
 	
 		if(ul_duty > INIT_DUTY_VALUE){
 		ul_duty--;
-		
 		bt2++;
-		
 		}
-	
 	}
 }
 
 void Hall_Phase(void)
 {
-	static uint8_t phase = 0;
+	static uint8_t hall_code = 0;
+	static uint32_t ul_duty1, ul_duty2, ul_duty3, high1, high2, low1;
 	
 	hall_1 = ioport_get_pin_level(PIN_HALL_1);
 	hall_2 = ioport_get_pin_level(PIN_HALL_2);
 	hall_3 = ioport_get_pin_level(PIN_HALL_3);
 
-	phase = (hall_3<<2) | (hall_2<<1) | (hall_1);
+	hall_code = (hall_3<<2) | (hall_2<<1) | (hall_1);
 
-	switch (phase){
+	switch (hall_code){
 	
-	case 5 : phase_lcd=1; break; //phase 1
-	case 1 : phase_lcd=2; break; //phase 2
-	case 3 : phase_lcd=3; break; //phase 3
-	case 2 : phase_lcd=4; break; //phase 4
-	case 6 : phase_lcd=5; break; //phase 5
-	case 4 : phase_lcd=6; break; //phase 6
+	case 5 : //phase 1
+		phase=1;
+		ul_duty1 = ul_duty;
+		ul_duty2 = 0;
+		ul_duty3 = 0;
+		high1 = PIN_PWM_EN1_GPIO;
+		high2 = PIN_PWM_EN2_GPIO;
+		low1 = PIN_PWM_EN3_GPIO;
+		break; 
+	case 1 : //phase 2
+		phase=2;
+		ul_duty1 = ul_duty;
+		ul_duty2 = 0;
+		ul_duty3 = 0;
+		high1 = PIN_PWM_EN1_GPIO;
+		high2 = PIN_PWM_EN3_GPIO;
+		low1 = PIN_PWM_EN2_GPIO;
+		break;
+	case 3 : //phase 3
+		phase=3;
+		ul_duty1 = 0;
+		ul_duty2 = ul_duty;
+		ul_duty3 = 0;
+		high1 = PIN_PWM_EN2_GPIO;
+		high2 = PIN_PWM_EN3_GPIO;
+		low1 = PIN_PWM_EN1_GPIO;
+		break;
+	case 2 : //phase 4
+		phase=4;
+		ul_duty1 = 0;
+		ul_duty2 = ul_duty;
+		ul_duty3 = 0;
+		high1 = PIN_PWM_EN1_GPIO;
+		high2 = PIN_PWM_EN2_GPIO;
+		low1 = PIN_PWM_EN3_GPIO;
+		break;
+	case 6 : //phase 5
+		phase=5;
+		ul_duty1 = 0;
+		ul_duty2 = 0;
+		ul_duty3 = ul_duty;
+		high1 = PIN_PWM_EN1_GPIO;
+		high2 = PIN_PWM_EN3_GPIO;
+		low1 = PIN_PWM_EN2_GPIO;
+		break;
+	case 4 : //phase 6
+		phase=6;
+		ul_duty1 = 0;
+		ul_duty2 = 0;
+		ul_duty3 = ul_duty;
+		high1 = PIN_PWM_EN2_GPIO;
+		high2 = PIN_PWM_EN3_GPIO;
+		low1 = PIN_PWM_EN1_GPIO;
+		break; 
 	}
+	
+	g_pwm_channel.channel = PIN_PWM_IN1_CHANNEL;
+	pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty1);
+	g_pwm_channel.channel = PIN_PWM_IN2_CHANNEL;
+	pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty2);
+	g_pwm_channel.channel = PIN_PWM_IN3_CHANNEL;
+	pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty3);
+	gpio_set_pin_high(high1);
+	gpio_set_pin_high(high2);
+	gpio_set_pin_low(low1);
+	
 }
 
 void Hall_Handler(uint32_t id, uint32_t mask)
@@ -161,7 +208,7 @@ int main(void)
 	escreve_int_lcd("hall1 = ", hall_1, pos_lcd_x, 90);
 	escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 115);
 	escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 140);
-	escreve_int_lcd("phase = ", phase_lcd, pos_lcd_x, 165);
+	escreve_int_lcd("phase = ", phase, pos_lcd_x, 165);
 
 
 	//gpio_configure_pin(PIO_PC21_IDX, (PIO_PERIPH_B | PIO_DEFAULT));  // PIn PC21
@@ -171,7 +218,7 @@ int main(void)
 
 	/* Infinite loop */
 	while (1) {
-		static uint8_t bt1_aux, bt2_aux, phase_lcd_aux;
+		static uint8_t bt1_aux, bt2_aux, phase_aux;
 		static uint32_t hall_1_aux, hall_2_aux, hall_3_aux, ul_duty_aux;
 
 		/* Atualiza o display somente quando houver alteração nas variáveis que serão apresentadas */
@@ -186,14 +233,14 @@ int main(void)
 			ul_duty_aux = ul_duty;
 		}
 		
-		if(phase_lcd_aux != phase_lcd || hall_1_aux != hall_1 || hall_2_aux != hall_2 || hall_3_aux != hall_3)
+		if(phase_aux != phase || hall_1_aux != hall_1 || hall_2_aux != hall_2 || hall_3_aux != hall_3)
 		{
 			escreve_int_lcd("hall1 = ", hall_1, pos_lcd_x, 90);
 			escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 115);
 			escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 140);
-			escreve_int_lcd("phase = ", phase_lcd, pos_lcd_x, 165);
+			escreve_int_lcd("phase = ", phase, pos_lcd_x, 165);
 
-			phase_lcd_aux = phase_lcd;
+			phase_aux = phase;
 			hall_1_aux = hall_1;
 			hall_2_aux = hall_2;
 			hall_3_aux = hall_3;

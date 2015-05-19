@@ -76,7 +76,14 @@ void board_init(void)
 	gpio_configure_pin(PIN_HALL_1, PIN_HALL_1_TYPE);
 	gpio_configure_pin(PIN_HALL_2, PIN_HALL_2_TYPE);
 	gpio_configure_pin(PIN_HALL_3, PIN_HALL_3_TYPE);
-
+	
+	/*Configure Pwm sensor*/
+	gpio_configure_pin(PIN_PWM_IN1_GPIO, PIN_PWM_IN1_FLAGS); //Saida do pwm para fase U1-2
+	gpio_configure_pin(PIN_PWM_IN2_GPIO, PIN_PWM_IN2_FLAGS); //Saida do pwm para fase U2-3
+	gpio_configure_pin(PIN_PWM_IN3_GPIO, PIN_PWM_IN3_FLAGS); //Saida do pwm para fase U3-1
+	gpio_configure_pin(PIN_PWM_EN1_GPIO, PIN_PWM_EN1_FLAGS); //Habilita fase U1-2
+	gpio_configure_pin(PIN_PWM_EN2_GPIO, PIN_PWM_EN2_FLAGS); //Habilita fase U2-3
+	gpio_configure_pin(PIN_PWM_EN3_GPIO, PIN_PWM_EN3_FLAGS); //Habilita fase U3-1
 
 #ifdef CONF_BOARD_UART_CONSOLE
 	/* Configure UART pins */
@@ -90,16 +97,6 @@ void board_init(void)
 
 	/* ADC Trigger configuration */
 	gpio_configure_pin(PINS_ADC_TRIG, PINS_ADC_TRIG_FLAG);
-#endif
-
-#ifdef CONF_BOARD_PWM_LED0
-	/* Configure PWM LED0 pin */
-	gpio_configure_pin(PIN_PWM_IN1_GPIO, PIN_PWM_IN1_FLAGS);
-#endif
-
-#ifdef CONF_BOARD_PWM_LED1
-	/* Configure PWM LED1 pin */
-	gpio_configure_pin(PIN_PWM_IN2_GPIO, PIN_PWM_IN2_FLAGS);
 #endif
 
 #ifdef CONF_BOARD_TWI0
