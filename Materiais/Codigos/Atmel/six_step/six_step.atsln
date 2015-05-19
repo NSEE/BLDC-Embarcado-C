@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "six_step", "six_step.cproj", "{AF4A0852-DD0A-44DC-9A52-A55B5758D37C}"
 EndProject
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ILI9225_EXAMPLE1", "ILI9225_EXAMPLE1\ILI9225_EXAMPLE1.cproj", "{6B8C5B97-37F4-48DE-AF6A-3E51CB7E0F1A}"
-EndProject
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "DELAY_EXAMPLE1", "DELAY_EXAMPLE1\DELAY_EXAMPLE1.cproj", "{031F4B03-D284-4E48-8F45-5698E32ABA45}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -17,14 +13,6 @@ Global
 		{AF4A0852-DD0A-44DC-9A52-A55B5758D37C}.Debug|ARM.Build.0 = Debug|ARM
 		{AF4A0852-DD0A-44DC-9A52-A55B5758D37C}.Release|ARM.ActiveCfg = Release|ARM
 		{AF4A0852-DD0A-44DC-9A52-A55B5758D37C}.Release|ARM.Build.0 = Release|ARM
-		{6B8C5B97-37F4-48DE-AF6A-3E51CB7E0F1A}.Debug|ARM.ActiveCfg = Debug|ARM
-		{6B8C5B97-37F4-48DE-AF6A-3E51CB7E0F1A}.Debug|ARM.Build.0 = Debug|ARM
-		{6B8C5B97-37F4-48DE-AF6A-3E51CB7E0F1A}.Release|ARM.ActiveCfg = Release|ARM
-		{6B8C5B97-37F4-48DE-AF6A-3E51CB7E0F1A}.Release|ARM.Build.0 = Release|ARM
-		{031F4B03-D284-4E48-8F45-5698E32ABA45}.Debug|ARM.ActiveCfg = Debug|ARM
-		{031F4B03-D284-4E48-8F45-5698E32ABA45}.Debug|ARM.Build.0 = Debug|ARM
-		{031F4B03-D284-4E48-8F45-5698E32ABA45}.Release|ARM.ActiveCfg = Release|ARM
-		{031F4B03-D284-4E48-8F45-5698E32ABA45}.Release|ARM.Build.0 = Release|ARM
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
