@@ -175,17 +175,9 @@ void Hall_Handler(uint32_t id, uint32_t mask)
 	{
 		Hall_Phase();
 	}
+	
+	return;
 }
-//uint32_t six[6] = {0x4, 0x1, 0x2, 0x}
-//
-	//
-//funcao(hall_1, hall_2, hall_3);	
-//
-//uint32_t valor = (hall_3 << 2) | (hall_2 << 1) |  hall_1;
-//
-//PIOA->PIO_CODR = 0xFFFFFF;
-//PIOA->PIO_SODR = six[valor];
-
 
 int main(void)
 {
@@ -209,12 +201,6 @@ int main(void)
 	escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 115);
 	escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 140);
 	escreve_int_lcd("phase = ", phase, pos_lcd_x, 165);
-
-
-	//gpio_configure_pin(PIO_PC21_IDX, (PIO_PERIPH_B | PIO_DEFAULT));  // PIn PC21
-	//gpio_configure_pin(PIN_PWM_LED0_GPIO, PIN_PWM_LED0_FLAGS);
-	
-	
 
 	/* Infinite loop */
 	while (1) {
