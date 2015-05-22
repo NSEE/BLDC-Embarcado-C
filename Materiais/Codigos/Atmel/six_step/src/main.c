@@ -29,8 +29,7 @@ uint32_t hall_3 = 0;
 
 uint8_t phase = 0;
 
-static uint8_t bt1 = 0;
-static uint8_t bt2 = 0;
+static bool flag_hab_m = 0;
 
 /** PWM channel instance for LEDs */
 pwm_channel_t g_pwm_channel;
@@ -66,12 +65,16 @@ void Button1_Handler(uint32_t id, uint32_t mask)
 	/*Botão 1 aumenta o duty cicle (ul_duty)*/
 	if (PIN_PUSHBUTTON_1_ID == id && PIN_PUSHBUTTON_1_MASK == mask) {
 
+		if (ul_duty == 0)
+		{
+			flag_hab_m = 1;
+		}
+		
+		
 		if(ul_duty < PERIOD_VALUE) {
 			ul_duty++;
-			bt1++;
 		}
 	}
-
 }
 
 void Button2_Handler(uint32_t id, uint32_t mask)
@@ -81,7 +84,6 @@ void Button2_Handler(uint32_t id, uint32_t mask)
 	
 		if(ul_duty > INIT_DUTY_VALUE){
 		ul_duty--;
-		bt2++;
 		}
 	}
 }
@@ -194,42 +196,42 @@ int main(void)
 	ili9225_draw_string(40, 20, (uint8_t *)"six-step");
 	pos_lcd_x = 20;
 	pos_lcd_y = 40;
-	escreve_int_lcd("bt1 = ", bt1, pos_lcd_x, 40);
-	escreve_int_lcd("bt2 = ", bt2, pos_lcd_x, 65);
-	escreve_int_lcd("dc = ", ul_duty, pos_lcd_x, 190);
-	escreve_int_lcd("hall1 = ", hall_1, pos_lcd_x, 90);
-	escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 115);
-	escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 140);
-	escreve_int_lcd("phase = ", phase, pos_lcd_x, 165);
+	escreve_int_lcd("dc = ", ul_duty, pos_lcd_x, 40);
+	escreve_int_lcd("hall1 = ", hall_1, pos_lcd_x, 60);
+	escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 80);
+	escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 100);
+	escreve_int_lcd("phase = ", phase, pos_lcd_x, 120);
 
 	/* Infinite loop */
 	while (1) {
-		static uint8_t bt1_aux, bt2_aux, phase_aux;
+		static uint8_t phase_aux;
 		static uint32_t hall_1_aux, hall_2_aux, hall_3_aux, ul_duty_aux;
 
 		/* Atualiza o display somente quando houver alteração nas variáveis que serão apresentadas */
 		
-		if(bt1_aux != bt1 || bt2_aux != bt2 || ul_duty_aux != ul_duty)
+		if(ul_duty_aux != ul_duty)
 		{
-			escreve_int_lcd("bt1 = ", bt1, pos_lcd_x, 40);
-			escreve_int_lcd("bt2 = ", bt2, pos_lcd_x, 65);
-			escreve_int_lcd("dc = ", ul_duty, pos_lcd_x, 190);
-			bt1_aux = bt1;
-			bt2_aux = bt2;
+			escreve_int_lcd("dc = ", ul_duty*100/PERIOD_VALUE, pos_lcd_x, 40);
 			ul_duty_aux = ul_duty;
 		}
 		
 		if(phase_aux != phase || hall_1_aux != hall_1 || hall_2_aux != hall_2 || hall_3_aux != hall_3)
 		{
-			escreve_int_lcd("hall1 = ", hall_1, pos_lcd_x, 90);
-			escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 115);
-			escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 140);
-			escreve_int_lcd("phase = ", phase, pos_lcd_x, 165);
+			escreve_int_lcd("hall1 = ", hall_1, pos_lcd_x, 60);
+			escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 80);
+			escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 100);
+			escreve_int_lcd("phase = ", phase, pos_lcd_x, 120);
 
 			phase_aux = phase;
 			hall_1_aux = hall_1;
 			hall_2_aux = hall_2;
 			hall_3_aux = hall_3;
+		}
+		
+		if(flag_hab_m && ul_duty != 0)
+		{
+			Hall_Phase();
+			flag_hab_m = 0;
 		}
 	}
 }
