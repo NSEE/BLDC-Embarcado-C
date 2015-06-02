@@ -30,6 +30,7 @@ uint32_t hall_3 = 0;
 uint8_t phase = 0;
 
 static bool flag_hab_m = 0;
+static bool sel_rot = 0;
 
 /** PWM channel instance for LEDs */
 pwm_channel_t g_pwm_channel;
@@ -98,8 +99,13 @@ void Hall_Phase(void)
 	hall_3 = ioport_get_pin_level(PIN_HALL_3);
 
 	hall_code = (hall_3<<2) | (hall_2<<1) | (hall_1);
+	
+	if (sel_rot)
+		{
+			hall_code = ~hall_code;
+		}
 
-	switch (hall_code){
+	switch (hall_code & 0b00000111){
 	
 	case 5 : //phase 1
 		phase=1;
