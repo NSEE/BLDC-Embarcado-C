@@ -28,7 +28,6 @@ uint32_t hall_2 = 0;
 uint32_t hall_3 = 0;
 
 uint8_t phase = 0;
-uint32_t vel_count = 0;
 
 static bool flag_hab_m = 0;
 
@@ -172,34 +171,15 @@ void Hall_Phase(void)
 
 void Hall_Handler(uint32_t id, uint32_t mask)
 {
-	if (PIN_HALL_1_ID == id && PIN_HALL_1_MASK == mask) 
+	if ((PIN_HALL_1_ID == id && PIN_HALL_1_MASK == mask) || 
+		(PIN_HALL_2_ID == id && PIN_HALL_2_MASK == mask) || 
+		(PIN_HALL_3_ID == id && PIN_HALL_3_MASK == mask))
 	{
-		vel_count++;
 		Hall_Phase();
 	}
-	else
-	{
-		if((PIN_HALL_2_ID == id && PIN_HALL_2_MASK == mask) || 
-			(PIN_HALL_3_ID == id && PIN_HALL_3_MASK == mask))
-		{
-			Hall_Phase();
-		}
-	}
+	
+	return;
 }
-
-void TC0_Handler(void)
-{
-	volatile uint32_t ul_dummy;
-
-	/* Clear status bit to acknowledge interrupt */
-	ul_dummy = tc_get_status(TC0, 0);
-
-	/* Avoid compiler warning */
-	UNUSED(ul_dummy);
-
-
-}
-
 
 int main(void)
 {
@@ -210,7 +190,6 @@ int main(void)
 	configure_console();
 	configure_lcd();
 	g_pwm_channel = configure_pwm();
-	configure_tc();
 
 	/* Cabeçalho do lcd */
 	ili9225_set_foreground_color(COLOR_BLACK);
@@ -222,12 +201,11 @@ int main(void)
 	escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 80);
 	escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 100);
 	escreve_int_lcd("phase = ", phase, pos_lcd_x, 120);
-	escreve_int_lcd("vel = ", vel_count, pos_lcd_x, 140);
 
 	/* Infinite loop */
 	while (1) {
 		static uint8_t phase_aux;
-		static uint32_t hall_1_aux, hall_2_aux, hall_3_aux, ul_duty_aux, vel_count_aux;
+		static uint32_t hall_1_aux, hall_2_aux, hall_3_aux, ul_duty_aux;
 
 		/* Atualiza o display somente quando houver alteração nas variáveis que serão apresentadas */
 		
@@ -237,19 +215,17 @@ int main(void)
 			ul_duty_aux = ul_duty;
 		}
 		
-		if(phase_aux != phase || hall_1_aux != hall_1 || hall_2_aux != hall_2 || hall_3_aux != hall_3 || vel_count_aux != vel_count)
+		if(phase_aux != phase || hall_1_aux != hall_1 || hall_2_aux != hall_2 || hall_3_aux != hall_3)
 		{
 			escreve_int_lcd("hall1 = ", hall_1, pos_lcd_x, 60);
 			escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 80);
 			escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 100);
 			escreve_int_lcd("phase = ", phase, pos_lcd_x, 120);
-			escreve_int_lcd("vel = ", vel_count, pos_lcd_x, 140);
 
 			phase_aux = phase;
 			hall_1_aux = hall_1;
 			hall_2_aux = hall_2;
 			hall_3_aux = hall_3;
-			vel_count_aux = vel_count;
 		}
 		
 		if(flag_hab_m && ul_duty != 0)
