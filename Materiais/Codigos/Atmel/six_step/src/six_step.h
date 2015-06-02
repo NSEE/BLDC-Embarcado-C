@@ -61,6 +61,9 @@
 /** Initial duty cycle value */
 #define INIT_DUTY_VALUE    0
 
+/* =============== TC =============== */
+#define TC_HZ_FREQUENCY      4 //4kHz
+
 /* =============== Prototypes =============== */
 void Hall_Phase(void);
 void configure_hall(void);
@@ -69,5 +72,6 @@ void Button1_Handler(uint32_t id, uint32_t mask);
 void Button2_Handler(uint32_t id, uint32_t mask);
 void Hall_Handler(uint32_t id, uint32_t mask);
 pwm_channel_t configure_pwm(void);
+void configure_tc(void);
 
 #endif
