@@ -45,9 +45,9 @@
 #define PIN_PWM_EN2_GPIO    PIO_PC17_IDX
 #define PIN_PWM_EN2_FLAGS	(PIO_OUTPUT_0 | PIO_DEFAULT)
 
-#define PIN_PWM_IN3_GPIO    PIO_PB14_IDX
+#define PIN_PWM_IN3_GPIO    PIO_PC20_IDX
 #define PIN_PWM_IN3_FLAGS   (PIO_PERIPH_B | PIO_DEFAULT)
-#define PIN_PWM_IN3_CHANNEL PWM_CHANNEL_3
+#define PIN_PWM_IN3_CHANNEL PWM_CHANNEL_2
 #define PIN_PWM_EN3_GPIO    PIO_PC18_IDX
 #define PIN_PWM_EN3_FLAGS	(PIO_OUTPUT_0 | PIO_DEFAULT)
 
@@ -61,6 +61,9 @@
 /** Initial duty cycle value */
 #define INIT_DUTY_VALUE    0
 
+/* =============== TC =============== */
+# define TC_HZ_FREQUENCY 4
+
 /* =============== Prototypes =============== */
 void Hall_Phase(void);
 void configure_hall(void);
@@ -69,5 +72,6 @@ void Button1_Handler(uint32_t id, uint32_t mask);
 void Button2_Handler(uint32_t id, uint32_t mask);
 void Hall_Handler(uint32_t id, uint32_t mask);
 pwm_channel_t configure_pwm(void);
+void configure_tc(void);
 
 #endif

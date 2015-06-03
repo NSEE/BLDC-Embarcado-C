@@ -32,6 +32,9 @@ uint8_t phase = 0;
 static bool flag_hab_m = 0;
 static bool sel_rot = 0;
 
+uint32_t vel_count = 0;
+uint32_t vel_pulse = 0;
+
 /** PWM channel instance for LEDs */
 pwm_channel_t g_pwm_channel;
 
@@ -71,6 +74,7 @@ void Button1_Handler(uint32_t id, uint32_t mask)
 			flag_hab_m = 1;
 		}
 		
+		ioport_toggle_pin_level(LED1_GPIO);
 		
 		if(ul_duty < PERIOD_VALUE) {
 			ul_duty++;
@@ -83,6 +87,8 @@ void Button2_Handler(uint32_t id, uint32_t mask)
 	/*Botão 2 diminui o duty cicle (ul_duty)*/
 	if (PIN_PUSHBUTTON_2_ID == id && PIN_PUSHBUTTON_2_MASK == mask) {
 	
+		ioport_toggle_pin_level(LED2_GPIO);
+		
 		if(ul_duty > INIT_DUTY_VALUE){
 		ul_duty--;
 		}
@@ -177,14 +183,36 @@ void Hall_Phase(void)
 
 void Hall_Handler(uint32_t id, uint32_t mask)
 {
-	if ((PIN_HALL_1_ID == id && PIN_HALL_1_MASK == mask) || 
-		(PIN_HALL_2_ID == id && PIN_HALL_2_MASK == mask) || 
-		(PIN_HALL_3_ID == id && PIN_HALL_3_MASK == mask))
+	if (PIN_HALL_1_ID == id && PIN_HALL_1_MASK == mask)
 	{
+		vel_pulse++;
 		Hall_Phase();
 	}
 	
-	return;
+	else
+	{
+		if((PIN_HALL_2_ID == id && PIN_HALL_2_MASK == mask) ||
+		(PIN_HALL_3_ID == id && PIN_HALL_3_MASK == mask))
+		{
+			Hall_Phase();
+		}
+	}
+}
+
+void TC0_Handler(void)
+{
+	volatile uint32_t ul_dummy;
+
+	/* Clear status bit to acknowledge interrupt */
+	ul_dummy = tc_get_status(TC0, 0);
+
+	/* Avoid compiler warning */
+	UNUSED(ul_dummy);
+
+	ioport_toggle_pin_level(LED0_GPIO);
+	vel_count = vel_pulse*TC_HZ_FREQUENCY;
+	vel_pulse = 0;
+	
 }
 
 int main(void)
@@ -196,6 +224,7 @@ int main(void)
 	configure_console();
 	configure_lcd();
 	g_pwm_channel = configure_pwm();
+	configure_tc();
 
 	/* Cabeçalho do lcd */
 	ili9225_set_foreground_color(COLOR_BLACK);
@@ -207,11 +236,12 @@ int main(void)
 	escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 80);
 	escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 100);
 	escreve_int_lcd("phase = ", phase, pos_lcd_x, 120);
+	escreve_int_lcd("vel = ", vel_count, pos_lcd_x, 140);
 
 	/* Infinite loop */
 	while (1) {
 		static uint8_t phase_aux;
-		static uint32_t hall_1_aux, hall_2_aux, hall_3_aux, ul_duty_aux;
+		static uint32_t hall_1_aux, hall_2_aux, hall_3_aux, ul_duty_aux, vel_count_aux;
 
 		/* Atualiza o display somente quando houver alteração nas variáveis que serão apresentadas */
 		
@@ -221,17 +251,19 @@ int main(void)
 			ul_duty_aux = ul_duty;
 		}
 		
-		if(phase_aux != phase || hall_1_aux != hall_1 || hall_2_aux != hall_2 || hall_3_aux != hall_3)
+		if(phase_aux != phase || hall_1_aux != hall_1 || hall_2_aux != hall_2 || hall_3_aux != hall_3 || vel_count_aux != vel_count)
 		{
 			escreve_int_lcd("hall1 = ", hall_1, pos_lcd_x, 60);
 			escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 80);
 			escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 100);
 			escreve_int_lcd("phase = ", phase, pos_lcd_x, 120);
+			escreve_int_lcd("vel = ", vel_count, pos_lcd_x, 140);
 
 			phase_aux = phase;
 			hall_1_aux = hall_1;
 			hall_2_aux = hall_2;
 			hall_3_aux = hall_3;
+			vel_count_aux = vel_count;
 		}
 		
 		if(flag_hab_m && ul_duty != 0)

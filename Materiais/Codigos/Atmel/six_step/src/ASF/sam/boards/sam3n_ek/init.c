@@ -67,6 +67,7 @@ void board_init(void)
 	/* Configure LED pins */
 	gpio_configure_pin(LED0_GPIO, LED0_FLAGS);
 	gpio_configure_pin(LED1_GPIO, LED1_FLAGS);
+	gpio_configure_pin(LED2_GPIO, LED2_FLAGS);
 
 	/* Configure Push Button pins */
 	gpio_configure_pin(GPIO_PUSH_BUTTON_1, GPIO_PUSH_BUTTON_1_FLAGS);
