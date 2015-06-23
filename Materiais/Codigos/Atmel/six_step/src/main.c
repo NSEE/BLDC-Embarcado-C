@@ -69,7 +69,7 @@ void Button1_Handler(uint32_t id, uint32_t mask)
 	/*Botão 1 aumenta o duty cicle (ul_duty)*/
 	if (PIN_PUSHBUTTON_1_ID == id && PIN_PUSHBUTTON_1_MASK == mask) {
 
-		if (ul_duty == 0)
+		if (ul_duty == 0 || vel_count == 0)
 		{
 			flag_hab_m = 1;
 		}
@@ -248,7 +248,7 @@ int main(void)
 		
 		if(ul_duty_aux != ul_duty)
 		{
-			escreve_int_lcd("dc = ", ul_duty*100/PERIOD_VALUE, pos_lcd_x, 40);
+			escreve_int_lcd("dc = ", ul_duty, pos_lcd_x, 40);
 			ul_duty_aux = ul_duty;
 		}
 		
