@@ -210,7 +210,7 @@ void TC0_Handler(void)
 	UNUSED(ul_dummy);
 
 	ioport_toggle_pin_level(LED0_GPIO);
-	vel_count = vel_pulse*TC_HZ_FREQUENCY;
+	vel_count = vel_pulse*30*TC_HZ_FREQUENCY/POLE_PAIRS;
 	vel_pulse = 0;
 	
 }
@@ -239,7 +239,8 @@ int main(void)
 	escreve_int_lcd("vel = ", vel_count, pos_lcd_x, 140);
 
 	/* Infinite loop */
-	while (1) {
+	while (1)
+	{
 		static uint8_t phase_aux;
 		static uint32_t hall_1_aux, hall_2_aux, hall_3_aux, ul_duty_aux, vel_count_aux;
 

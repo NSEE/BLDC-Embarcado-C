@@ -62,8 +62,9 @@
 #define INIT_DUTY_VALUE    0
 
 /* =============== TC =============== */
-# define TC_HZ_FREQUENCY 4
+#define TC_HZ_FREQUENCY 4
 
+#define POLE_PAIRS 4
 /* =============== Prototypes =============== */
 void Hall_Phase(void);
 void configure_hall(void);
