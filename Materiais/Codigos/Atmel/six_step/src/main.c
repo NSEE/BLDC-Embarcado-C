@@ -38,7 +38,7 @@ uint32_t vel_pulse = 0;
 /** PWM channel instance for LEDs */
 pwm_channel_t g_pwm_channel;
 
-static uint32_t ul_duty = INIT_DUTY_VALUE;  /* PWM duty cycle rate */
+static uint32_t ul_duty = 30;  /* PWM duty cycle rate */
 
 
 void SPI_Handler(void)
