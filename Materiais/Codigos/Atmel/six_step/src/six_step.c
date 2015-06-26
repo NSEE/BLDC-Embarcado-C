@@ -51,6 +51,7 @@ pwm_channel_t configure_pwm(void)
 	pwm_channel_disable(PWM, PIN_PWM_IN1_CHANNEL); // channel 0
 	pwm_channel_disable(PWM, PIN_PWM_IN2_CHANNEL); // channel 1
 	pwm_channel_disable(PWM, PIN_PWM_IN3_CHANNEL); // channel 2
+	pwm_channel_disable(PWM, PIN_PWM_GENERAL_CHANNEL); // channel 3
 	
 	/* Set PWM clock A as PWM_FREQUENCY*PERIOD_VALUE (clock B is not used) */
 	pwm_clock_t clock_setting = {
@@ -113,6 +114,25 @@ pwm_channel_t configure_pwm(void)
 	/* Disable channel counter event interrupt */
 	pwm_channel_disable_interrupt(PWM, PIN_PWM_IN3_CHANNEL, 0);
 	
+	/* Initialize PWM general channel */
+	/* Period is center-aligned */
+	g_pwm_channel.alignment = PWM_ALIGN_LEFT;
+	/* Output waveform starts at a high level */
+	g_pwm_channel.polarity = PWM_HIGH;
+	/* Use PWM clock A as source clock */
+	g_pwm_channel.ul_prescaler = PWM_CMR_CPRE_CLKA;
+	/* Period value of output waveform */
+	g_pwm_channel.ul_period = PERIOD_VALUE;
+	/* Duty cycle value of output waveform */
+	g_pwm_channel.ul_duty = INIT_DUTY_VALUE;
+	g_pwm_channel.channel = PIN_PWM_GENERAL_CHANNEL;
+	
+	pwm_channel_init(PWM, &g_pwm_channel);
+	
+	/* Disable channel counter event interrupt */
+	pwm_channel_disable_interrupt(PWM, PIN_PWM_GENERAL_CHANNEL, 0);
+	
+	
 	/* Configurar e habilitar interrupção do PWM*/
 	//NVIC_DisableIRQ(PWM_IRQn);
 	//NVIC_ClearPendingIRQ(PWM_IRQn);
@@ -123,7 +143,7 @@ pwm_channel_t configure_pwm(void)
 	pwm_channel_enable(PWM, PIN_PWM_IN1_CHANNEL);
 	pwm_channel_enable(PWM, PIN_PWM_IN2_CHANNEL);
 	pwm_channel_enable(PWM, PIN_PWM_IN3_CHANNEL);
-	
+	pwm_channel_enable(PWM, PIN_PWM_GENERAL_CHANNEL);
 	return g_pwm_channel;
 }
 

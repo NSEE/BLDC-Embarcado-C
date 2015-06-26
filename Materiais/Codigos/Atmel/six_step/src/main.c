@@ -32,6 +32,8 @@ uint8_t phase = 0;
 static bool flag_hab_m = 0;
 static bool sel_rot = 0;
 
+static bool flag_hab_test = 0;
+
 uint32_t vel_count = 0;
 uint32_t vel_pulse = 0;
 
@@ -67,31 +69,21 @@ void PWM_Handler(void)
 void Button1_Handler(uint32_t id, uint32_t mask)
 {
 	/*Botão 1 aumenta o duty cicle (ul_duty)*/
-	if (PIN_PUSHBUTTON_1_ID == id && PIN_PUSHBUTTON_1_MASK == mask) {
-
-		if (ul_duty == 0)
-		{
-			flag_hab_m = 1;
-		}
-		
+	if (PIN_PUSHBUTTON_1_ID == id && PIN_PUSHBUTTON_1_MASK == mask)
+	{
 		ioport_toggle_pin_level(LED1_GPIO);
-		
-		if(ul_duty < PERIOD_VALUE) {
-			ul_duty++;
-		}
+		flag_hab_test = 1;
 	}
 }
 
 void Button2_Handler(uint32_t id, uint32_t mask)
 {
 	/*Botão 2 diminui o duty cicle (ul_duty)*/
-	if (PIN_PUSHBUTTON_2_ID == id && PIN_PUSHBUTTON_2_MASK == mask) {
-	
+	if (PIN_PUSHBUTTON_2_ID == id && PIN_PUSHBUTTON_2_MASK == mask)
+	{
 		ioport_toggle_pin_level(LED2_GPIO);
-		
-		if(ul_duty > INIT_DUTY_VALUE){
-		ul_duty--;
-		}
+		ul_duty  = 0;
+		flag_hab_test = 0;
 	}
 }
 
@@ -175,6 +167,10 @@ void Hall_Phase(void)
 	pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty2);
 	g_pwm_channel.channel = PIN_PWM_IN3_CHANNEL;
 	pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty3);
+	
+	g_pwm_channel.channel = PIN_PWM_GENERAL_CHANNEL;
+	pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty);
+	
 	gpio_set_pin_high(high1);
 	gpio_set_pin_high(high2);
 	gpio_set_pin_low(low1);
@@ -213,6 +209,18 @@ void TC0_Handler(void)
 	vel_count = vel_pulse*30*TC_HZ_FREQUENCY/POLE_PAIRS;
 	vel_pulse = 0;
 	
+	if (flag_hab_test)
+	{
+		if (ul_duty == 0 || vel_count == 0)
+		{
+			flag_hab_m = 1;
+		}
+		
+		if(ul_duty < PERIOD_VALUE)
+		{
+			ul_duty++;
+		}
+	}
 }
 
 int main(void)

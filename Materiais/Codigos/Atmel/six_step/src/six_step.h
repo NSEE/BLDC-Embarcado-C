@@ -51,18 +51,21 @@
 #define PIN_PWM_EN3_GPIO    PIO_PC18_IDX
 #define PIN_PWM_EN3_FLAGS	(PIO_OUTPUT_0 | PIO_DEFAULT)
 
-
+/* =============== Testes e validações =============== */
+#define PIN_PWM_GENERAL_GPIO		PIO_PC21_IDX
+#define PIN_PWM_GENERAL_FLAGS   (PIO_PERIPH_B | PIO_DEFAULT)
+#define PIN_PWM_GENERAL_CHANNEL PWM_CHANNEL_3
 
 /* =============== PWM =============== */
 /** PWM frequency in Hz */
-#define PWM_FREQUENCY      10000 //10kHz
+#define PWM_FREQUENCY      16000 //16kHz
 /** Period value of PWM output waveform */
 #define PERIOD_VALUE       10
 /** Initial duty cycle value */
 #define INIT_DUTY_VALUE    0
 
 /* =============== TC =============== */
-#define TC_HZ_FREQUENCY 4
+#define TC_HZ_FREQUENCY 2
 
 #define POLE_PAIRS 4
 /* =============== Prototypes =============== */
