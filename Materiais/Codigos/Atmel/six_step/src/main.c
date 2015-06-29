@@ -32,6 +32,8 @@ uint8_t phase = 0;
 static bool flag_hab_m = 0;
 static bool sel_rot = 0;
 
+static bool flag_hab_test = 0;
+
 uint32_t vel_count = 0;
 uint32_t vel_pulse = 0;
 
@@ -69,16 +71,8 @@ void Button1_Handler(uint32_t id, uint32_t mask)
 	/*Botão 1 aumenta o duty cicle (ul_duty)*/
 	if (PIN_PUSHBUTTON_1_ID == id && PIN_PUSHBUTTON_1_MASK == mask) {
 
-		if (ul_duty == 0 || vel_count == 0)
-		{
-			flag_hab_m = 1;
-		}
-		
+		flag_hab_test = 1;
 		ioport_toggle_pin_level(LED1_GPIO);
-		
-		if(ul_duty < PERIOD_VALUE) {
-			ul_duty++;
-		}
 	}
 }
 
@@ -88,12 +82,11 @@ void Button2_Handler(uint32_t id, uint32_t mask)
 	if (PIN_PUSHBUTTON_2_ID == id && PIN_PUSHBUTTON_2_MASK == mask) {
 	
 		ioport_toggle_pin_level(LED2_GPIO);
-		
-		if(ul_duty > INIT_DUTY_VALUE){
-		ul_duty--;
-		}
+		ul_duty  = 30;
+		flag_hab_test = 0;
 	}
 }
+
 
 void Hall_Phase(void)
 {
@@ -202,7 +195,8 @@ void Hall_Handler(uint32_t id, uint32_t mask)
 void TC0_Handler(void)
 {
 	volatile uint32_t ul_dummy;
-
+	static uint8_t aux = 0;
+		
 	/* Clear status bit to acknowledge interrupt */
 	ul_dummy = tc_get_status(TC0, 0);
 
@@ -213,6 +207,24 @@ void TC0_Handler(void)
 	vel_count = vel_pulse*30*TC_HZ_FREQUENCY/POLE_PAIRS;
 	vel_pulse = 0;
 	
+	
+	if(flag_hab_test)
+	{
+		
+		if(aux < 3)
+		{
+			aux++;
+		}
+		else
+		{
+			aux = 0;
+			if (vel_count == 0)
+			{
+				ul_duty++;
+				flag_hab_m = 1;
+			}
+		}
+	}
 }
 
 int main(void)
