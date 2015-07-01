@@ -85,6 +85,9 @@ void board_init(void)
 	gpio_configure_pin(PIN_PWM_EN1_GPIO, PIN_PWM_EN1_FLAGS); //Habilita fase U1-2
 	gpio_configure_pin(PIN_PWM_EN2_GPIO, PIN_PWM_EN2_FLAGS); //Habilita fase U2-3
 	gpio_configure_pin(PIN_PWM_EN3_GPIO, PIN_PWM_EN3_FLAGS); //Habilita fase U3-1
+	
+	/*Configure Pwm general sensor for test*/
+	gpio_configure_pin(PIN_PWM_GENERAL_GPIO, PIN_PWM_GENERAL_FLAGS); //Saida do pwm de qualquer fase
 
 #ifdef CONF_BOARD_UART_CONSOLE
 	/* Configure UART pins */

@@ -51,7 +51,10 @@
 #define PIN_PWM_EN3_GPIO    PIO_PC18_IDX
 #define PIN_PWM_EN3_FLAGS	(PIO_OUTPUT_0 | PIO_DEFAULT)
 
-
+/* =============== Testes e validações =============== */
+#define PIN_PWM_GENERAL_GPIO		PIO_PC21_IDX
+#define PIN_PWM_GENERAL_FLAGS   (PIO_PERIPH_B | PIO_DEFAULT)
+#define PIN_PWM_GENERAL_CHANNEL PWM_CHANNEL_3
 
 /* =============== PWM =============== */
 /** PWM frequency in Hz */

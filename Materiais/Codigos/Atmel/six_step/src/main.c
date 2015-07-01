@@ -168,6 +168,10 @@ void Hall_Phase(void)
 	pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty2);
 	g_pwm_channel.channel = PIN_PWM_IN3_CHANNEL;
 	pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty3);
+	
+	g_pwm_channel.channel = PIN_PWM_GENERAL_CHANNEL;
+	pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty);
+	
 	gpio_set_pin_high(high1);
 	gpio_set_pin_high(high2);
 	gpio_set_pin_low(low1);
