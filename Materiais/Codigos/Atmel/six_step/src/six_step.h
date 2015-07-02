@@ -58,7 +58,7 @@
 
 /* =============== PWM =============== */
 /** PWM frequency in Hz */
-#define PWM_FREQUENCY      16000 //16kHz
+#define PWM_FREQUENCY      20000 //20kHz
 /** Period value of PWM output waveform */
 #define PERIOD_VALUE       10
 /** Initial duty cycle value */
