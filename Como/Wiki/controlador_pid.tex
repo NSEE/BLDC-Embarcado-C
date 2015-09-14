@@ -14,9 +14,27 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{float}
-\usepackage[square]{natbib}
+\usepackage[square, numbers]{natbib}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows}
+\usepackage{algpseudocode,algorithm}
+
+\algrenewcommand\algorithmicend{\textbf{fim}}
+\algrenewcommand\algorithmicdo{\textbf{faça}}
+\algrenewcommand\algorithmicwhile{\textbf{enquanto}}
+\algrenewcommand\algorithmicfor{\textbf{para}}
+\algrenewcommand\algorithmicif{\textbf{se}}
+\algrenewcommand\algorithmicthen{\textbf{então}}
+\algrenewcommand\algorithmicelse{\textbf{senão}}
+\algrenewcommand\algorithmicreturn{\textbf{devolve}}
+\algrenewcommand\algorithmicfunction{\textbf{função}}
+\algrenewtext{EndWhile}{\algorithmicend\ \algorithmicwhile}
+\algrenewtext{EndFor}{\algorithmicend\ \algorithmicfor}
+\algrenewtext{EndIf}{\algorithmicend\ \algorithmicif}
+\algrenewtext{EndFunction}{\algorithmicend\ \algorithmicfunction}
+\algnewcommand\algorithmicto{\textbf{até}}
+\algrenewtext{For}[3]%
+{\algorithmicfor\ #1 $\gets$ #2 \algorithmicto\ #3 \algorithmicdo}
 
 \author{Cauê Menegaldo}
 \title{Controlador PID - Conceitos básicos e implementação digital}
@@ -29,7 +47,7 @@
 
 	PID é um algoritmo de controle com a ação de três termos: Proporcional (P), Integral (I) e Derivativo (D).
 	
-	O termo proporcional tem o objetivo de minimizar o erro ($e$) do sistema, que é a diferença entre o sinal de controle, ou \emph{set point}, ($u_c$) e a variável controlada ($y$)
+	O termo proporcional tem o objetivo de minimizar o erro ($e$) do sistema, que é a diferença entre o sinal de controle (\emph{set point}) ($u_c$) e a variável controlada ($y$)
 
 	\begin{equation}
 		e = u_{c}-y
@@ -99,7 +117,7 @@
 		
 			A saída do controlador $u$ é limitada a saturação do atuador ($u_{lim}$) o que pode trazer alguns efeitos indesejados. Se o erro for suficientemente grande, o termo integrador, por ser uma somatória dos erros passados, pode também adquirir um valor alto. Quando o erro é reduzido, o termo integrador pode ser tão alto que levaria um tempo indesejado para atuar de forma normal. Este efeito é chamado de \emph{windup}.
 			
-			Uma forma de evitar esse problema é avaliar quando o atuador é saturado e parar de incrementar o termo integrador, ou então zerá-lo. Uma forma ainda mais interessante é decrementar o termo integral de forma dinâmica em função de uma constante de tempo $T_{t}$ (\emph{tracking-time}), que indica quão rápido isso acontecerá, e da diferença entre a saturação e saída do controlador. $T_{t}$ deve ser maior que $T_{d}$ e menor que $T_{i}$. Sugere-se utilizar $T_{t}=\sqrt{T_{i}T_{d}}$ \cite{astrom1995}.
+			Uma forma de evitar esse problema é avaliar quando o atuador é saturado e parar de incrementar o termo integrador, ou então zerá-lo. Uma forma ainda mais interessante é decrementar o termo integral de forma dinâmica em função de uma constante de tempo $T_{t}$ (\emph{tracking-time}), que indica quão rápido isso acontecerá, e da diferença entre a saturação e saída do controlador. $T_{t}$ deve ser maior que $T_{d}$ e menor que $T_{i}$. Sugere-se utilizar $T_{t}=\sqrt{T_{i}T_{d}}$.
 			
 			\tikzstyle{block} = [draw, fill=blue!10, rectangle, 
 			minimum height=2.5em, minimum width=3em]
@@ -241,12 +259,87 @@
 		\begin{equation}
 			D(k) = \frac{2T_{d}-Nh}{2T_{d} + Nh} \, D(k-1) - \frac{2KT_{d}N}{2T_{d}+Nh} \left(y(k) - y(k-1)\right)
 		\end{equation}	
-		
+
+%\subsection{Pseudo-código}
+%
+%
+%\begin{algorithm}
+%	\caption{PID}
+%	\begin{algorithmic}[1]
+%	
+%	\State $uc$ 		\Comment{sinal de controle}
+%	\State $y$			\Comment{variável controlada}
+%	\State $yold$		\Comment{variável controlada anterior}
+%	\State $v$			\Comment{saída do controlador}
+%	\State $u$			\Comment{saída tratada do controlador}
+%	\State $I$			\Comment{termo integrador}
+%	\State $D$			\Comment{termo derivativo}
+%	\State $K$			\Comment{ganho do controlador}
+%	\State $Ti$			\Comment{tempo integrativo}
+%	\State $Td$			\Comment{tempo derivativo}
+%	\State $Tt$			\Comment{tracking-time}
+%	\State $N$			\Comment{evitar ruidos (entre 8 e 20)}
+%	\State $b$			\Comment{fração do termo proporcional (default 1)}
+%	\State $ulow$		\Comment{limite inferior de saturação}
+%	\State $uhigh$		\Comment{limite superior de saturação}
+%	\State $h$			\Comment{tempo de atualização do controlador}
+%	\State $bi$			\Comment{auxilar para o integrador}
+%	\State $ar$			\Comment{auxiliar para o integrador}
+%	\State $bd$			\Comment{auxiliar para o derivativo}
+%	\State $ad$			\Comment{auxiliar para o derivativo}
+%
+%	\State
+%			
+%	\State $bi \leftarrow K*h/Ti$
+%	\State $ar \leftarrow h/Tt$
+%	\State $bd \leftarrow K*N*Td/(Td + N*h)$
+%	\State $ad \leftarrow Td/(Td + N*h)$
+%	
+%	\State
+%	
+%	\Function{AtualizaSaida}{}
+%	\State
+%	\Loop
+%	\State $P \leftarrow K*(b*uc - y)$
+%	\State $D \leftarrow ad*D - bd*(y - yold)$
+%	
+%	\State $v \leftarrow P + I + D$
+%	
+%	\If {$v < ulow$}
+%	\State	$u \leftarrow ulow$
+%	\ElsIf {$v > uhigh$}
+%	\State $u \leftarrow uhigh$
+%	\Else
+%	\State $u \leftarrow v$
+%	\EndIf
+%	
+%	\State
+%	%Executa u
+%	
+%	\State	$I \leftarrow I + bi*(uc - y) + ar*(u - v)$
+%	\State	$yold \leftarrow y$
+%	
+%	\State
+%	
+%	\While{$i < h$}
+%	\State $i++$ 
+%	\EndWhile
+%			
+%	\EndLoop	
+%	
+%	\State
+%	
+%	\EndFunction
+%
+%	\end{algorithmic}
+%\end{algorithm}
+
+
 \pagebreak
 
 \nocite{*}
 
-\bibliographystyle{plain}
+\bibliographystyle{authordate1}
 \bibliography{controlador_pid}
 
 
