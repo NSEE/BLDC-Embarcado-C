@@ -64,7 +64,9 @@
 /* =============== TC =============== */
 #define TC_HZ_FREQUENCY 4
 
+/* =============== Caracteristicas do motor =============== */
 #define POLE_PAIRS 4
+
 /* =============== Prototypes =============== */
 void Hall_Phase(void);
 void configure_hall(void);

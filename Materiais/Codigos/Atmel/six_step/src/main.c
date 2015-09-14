@@ -95,23 +95,30 @@ void Button2_Handler(uint32_t id, uint32_t mask)
 	}
 }
 
+/*	Comutação das fases do motor */
 void Hall_Phase(void)
 {
 	static uint8_t hall_code = 0;
 	static uint32_t ul_duty1, ul_duty2, ul_duty3, high1, high2, low1;
 	
+	/* Verifica o sinal lógico de cada um dos sensores hall */
 	hall_1 = ioport_get_pin_level(PIN_HALL_1);
 	hall_2 = ioport_get_pin_level(PIN_HALL_2);
 	hall_3 = ioport_get_pin_level(PIN_HALL_3);
 
+	/* os 3 primeiros bits da varável hall_code armazenam o nivel lógico dos halls  */
 	hall_code = (hall_3<<2) | (hall_2<<1) | (hall_1);
 	
+	/* Sentido de rotação:
+	   sel_rot 0 -> horário
+	   sel_rot 1 -> anti-horário */
 	if (sel_rot)
 		{
-			hall_code = ~hall_code;
+			hall_code = ~hall_code; //Complemento do hall_code
 		}
-
-	switch (hall_code & 0b00000111){
+	
+	/* Verifica qual o estado de comutação */
+	switch (hall_code & 0b00000111){ //filtra para avaliar somente os 3 primeiros bits em decimal
 	
 	case 5 : //phase 1
 		phase=1;
@@ -169,6 +176,7 @@ void Hall_Phase(void)
 		break; 
 	}
 	
+	/* Aciona as saidas de acordo com a fase do motor */
 	g_pwm_channel.channel = PIN_PWM_IN1_CHANNEL;
 	pwm_channel_update_duty(PWM, &g_pwm_channel, ul_duty1);
 	g_pwm_channel.channel = PIN_PWM_IN2_CHANNEL;
@@ -181,10 +189,12 @@ void Hall_Phase(void)
 	
 }
 
+/*	Interrupção dos Halls */
 void Hall_Handler(uint32_t id, uint32_t mask)
 {
 	if (PIN_HALL_1_ID == id && PIN_HALL_1_MASK == mask)
 	{
+		/* incrementa vel_puse para calcular a velocidade */
 		vel_pulse++;
 		Hall_Phase();
 	}
@@ -209,7 +219,12 @@ void TC0_Handler(void)
 	/* Avoid compiler warning */
 	UNUSED(ul_dummy);
 
-	ioport_toggle_pin_level(LED0_GPIO);
+	ioport_toggle_pin_level(LED0_GPIO); //verificar funcionamento
+	
+	/* medir frequência de rotação mecânica do motor em rpm
+	 * *30 é uma simplificação de *60/2:
+	 * *60 é pra transforma de rps para rpm
+	 * /2 pois temos dois pulsos (subida e descida) do hall por volta elétrica */
 	vel_count = vel_pulse*30*TC_HZ_FREQUENCY/POLE_PAIRS;
 	vel_pulse = 0;
 	
@@ -238,7 +253,6 @@ int main(void)
 	escreve_int_lcd("phase = ", phase, pos_lcd_x, 120);
 	escreve_int_lcd("vel = ", vel_count, pos_lcd_x, 140);
 
-	/* Infinite loop */
 	while (1)
 	{
 		static uint8_t phase_aux;
@@ -267,6 +281,7 @@ int main(void)
 			vel_count_aux = vel_count;
 		}
 		
+		/*Rotina para iniciar a rotação do motor*/
 		if(flag_hab_m && ul_duty != 0)
 		{
 			Hall_Phase();
