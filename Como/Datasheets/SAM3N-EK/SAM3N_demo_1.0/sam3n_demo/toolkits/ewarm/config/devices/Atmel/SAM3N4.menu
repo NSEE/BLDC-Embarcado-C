@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<optionMenuItem>
-  <tag>SAM3N4</tag>
-  <display>Atmel SAM3N4</display>
-  <data>$CUR_DIR$\SAM3N4.i79</data>
-</optionMenuItem>
