@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectVersion>6.2</ProjectVersion>
+    <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.ARMGCC.C</ToolchainName>
     <ProjectGuid>{af4a0852-dd0a-44dc-9a52-a55b5758d37c}</ProjectGuid>
     <avrdevice>ATSAM3N4C</avrdevice>
@@ -229,6 +229,7 @@
       <ToolName>SAM-ICE</ToolName>
     </com_atmel_avrdbg_tool_samice>
     <avrtoolinterface>JTAG</avrtoolinterface>
+    <ExternalProgrammingToolCommand />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
