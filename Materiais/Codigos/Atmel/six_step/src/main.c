@@ -18,7 +18,6 @@
 #include "six_step.h"
 #include <delay.h>
 
-
 uint32_t pos_lcd_x;
 uint32_t pos_lcd_y;
 const char *pre_lcd;
@@ -189,11 +188,18 @@ void Hall_Handler(uint32_t id, uint32_t mask)
 
 int main(void)
 {
+	uint8_t uc_char;
+	uint8_t uc_flag;
 	sysclk_init();
 	board_init();
 	configure_buttons();
 	configure_hall();
 	configure_console();
+	
+	printf("-- six-step --\r\n");
+	printf("-- %s\n\r", BOARD_NAME);
+	printf("-- Compiled: %s %s --\n\r", __DATE__, __TIME__);
+	
 	configure_lcd();
 	g_pwm_channel = configure_pwm();
 
@@ -238,6 +244,18 @@ int main(void)
 		{
 			Hall_Phase();
 			flag_hab_m = 0;
+		}
+		
+		uc_char = 0;
+		uc_flag = uart_read(CONSOLE_UART, &uc_char);
+		if (!uc_flag) {
+		if (uc_char == 's') {
+				printf("duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
+				printf("hall1 = %u", hall_1);
+				printf("hall2 = %u", hall_2);
+				printf("hall3 = %u", hall_3);
+				printf("phase = %u", phase);
+			}
 		}
 	}
 }
