@@ -77,7 +77,6 @@ extern "C" {
 
 /* No component found */
 #ifndef AAT31XX_MIN_BACKLIGHT_LEVEL
-#warning Cannot configure AAT31XX. The component must be declared in conf_board.h first!
 #define AAT31XX_MIN_BACKLIGHT_LEVEL           0
 #define AAT31XX_AVG_BACKLIGHT_LEVEL           0
 #define AAT31XX_MAX_BACKLIGHT_LEVEL           0

@@ -1,0 +1,346 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{graphicx}
+\usepackage[brazil]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{anysize}
+\marginsize{3cm}{3cm}{1cm}{3cm}
+\usepackage{indentfirst}
+\usepackage{wrapfig}
+\providecommand\phantomsection{}
+\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage[square, numbers]{natbib}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usepackage{algpseudocode,algorithm}
+
+\algrenewcommand\algorithmicend{\textbf{fim}}
+\algrenewcommand\algorithmicdo{\textbf{faça}}
+\algrenewcommand\algorithmicwhile{\textbf{enquanto}}
+\algrenewcommand\algorithmicfor{\textbf{para}}
+\algrenewcommand\algorithmicif{\textbf{se}}
+\algrenewcommand\algorithmicthen{\textbf{então}}
+\algrenewcommand\algorithmicelse{\textbf{senão}}
+\algrenewcommand\algorithmicreturn{\textbf{devolve}}
+\algrenewcommand\algorithmicfunction{\textbf{função}}
+\algrenewtext{EndWhile}{\algorithmicend\ \algorithmicwhile}
+\algrenewtext{EndFor}{\algorithmicend\ \algorithmicfor}
+\algrenewtext{EndIf}{\algorithmicend\ \algorithmicif}
+\algrenewtext{EndFunction}{\algorithmicend\ \algorithmicfunction}
+\algnewcommand\algorithmicto{\textbf{até}}
+\algrenewtext{For}[3]%
+{\algorithmicfor\ #1 $\gets$ #2 \algorithmicto\ #3 \algorithmicdo}
+
+\author{Cauê Menegaldo}
+\title{Controlador PID - Conceitos básicos e implementação digital}
+
+\begin{document}
+
+\maketitle
+
+\section{Controlador PID}
+
+	PID é um algoritmo de controle com a ação de três termos: Proporcional (P), Integral (I) e Derivativo (D).
+	
+	O termo proporcional tem o objetivo de minimizar o erro ($e$) do sistema, que é a diferença entre o sinal de controle (\emph{set point}) ($u_c$) e a variável controlada ($y$)
+
+	\begin{equation}
+		e = u_{c}-y
+		\label{eq_erro}
+	\end{equation}
+	
+	Se um controlador tiver somente a ação proporcional ele terá um erro em estado estacionário.
+	
+	O termo integral tem o objetivo de eliminar o erro em regime estacionário somando o termo do erro ao longo do tempo.
+	
+	O termo derivativo tem o objetivo de estabilizar o sistema em malha fechada e diminuir o tempo de acomodação prevendo o erro e avaliando sua taxa de variação no tempo.
+	
+	A saída do controlador ($u$) pode ser expressa como uma somatória da ação de todos os termos
+	
+	\begin{equation}
+		u(t)=K_{p}e(t) + K_{i} \int_{0}^{t}e(\tau)d\tau + K_{d} \frac{de(t)}{dt}
+		\label{eq_pid_t1}
+	\end{equation}
+		
+	Em que $K_{p}$, $K_{i}$ e $K_{d}$ são, respectivamente, os ganhos do termo proporcional, integral e derivativo permitindo o ajuste de cada um deles.
+
+	\subsection{Representação Alternativa}
+	
+		Outra forma de apresentar o PID, com o significado físico dos parâmetros mais claros, é em função de um único ganho $K$ para um erro também único compensado por erros passados e futuros, tempo integrativo $T_{i}$, que indica o tempo (ou amostras) para eliminar a soma dos erros passados, e tempo derivativo $T_{d}$, que indica o tempo (ou amostras) em que irá prever o valor do erro futuro
+	
+		\begin{align}
+			K &= K_{p} & T_{i} &= \frac{K_{p}}{K_{i}} & T_{d} &= \frac{K_{d}}{K_{p}}
+		\end{align}
+	
+		\begin{equation}
+			u(t)=K \left(e(t) + \frac{1}{T_{i}} \int_{0}^{t}e(\tau)d\tau + T_{d} \frac{de(t)}{dt}\right)
+			\label{eq_ pid_t2}
+		\end{equation}
+	
+		 Pode também ser representado pela função de transferência. Substituindo a Eq. \ref{eq_erro} na Eq. \ref{eq_ pid_t2}:
+		
+		\begin{equation}
+			U(s) = K \left(U_{c}(s) - Y(s) + \frac{1}{sT_{i}} \big(U_{c}(s) - Y(s)\big) - sT_{d}Y(s)\right)
+			\label{eq_pid_s_2}
+		\end{equation}
+		
+	
+	\subsection{Modificações no algoritmo PID}
+		
+		Quando se trata de implementação do algoritmo PID, algumas modificações se fazem necessárias.
+		
+		\subsubsection{Evitando Amplificação dos Ruídos}
+		\label{aprox_derivativo}
+			Implementar o termo derivativo da forma apresentada se torna inviável uma vez que os ruídos de medição serão muitíssimo amplificados. O ganho do termo derivativo precisa ser limitado. Podemos resolver isso com a seguinte aproximação:
+			
+			\begin{equation}
+				sT_{d} \approx \frac{sT_{d}}{1+sT_{d}/N}
+				\label{eq_aprox_freq}
+			\end{equation}
+			
+			Tal aproximação funciona bem para baixas frequências, mas o ganho do termo derivativo é limitado a $N$ em altas frequências. Tipicamente o valor de $N$ deve ser entre $8$ e $20$.
+	
+		\subsubsection{Fração do Termo Proporcional}
+			No trabalho de controladores analógicos observou-se também vantajoso não implementar o termo proporcional de forma direta, mas uma fração $b$ do sinal de controle. Dessa forma, substituindo a Eq. \ref{eq_aprox_freq} e a fração $b$ obtemos: 
+	
+			\begin{equation}
+				U(s) = K \left(bU_{c}(s) - Y(s) + \frac{1}{sT_{i}} \big(U_{c}(s) - Y(s)\big) - \frac{sT_{d}}{1+sT_{d}/N} Y(s)\right)
+				\label{eq_pid_s_b}
+			\end{equation}
+
+		\subsubsection{\emph{Anti-windup}}
+		
+			A saída do controlador $u$ é limitada a saturação do atuador ($u_{lim}$) o que pode trazer alguns efeitos indesejados. Se o erro for suficientemente grande, o termo integrador, por ser uma somatória dos erros passados, pode também adquirir um valor alto. Quando o erro é reduzido, o termo integrador pode ser tão alto que levaria um tempo indesejado para atuar de forma normal. Este efeito é chamado de \emph{windup}.
+			
+			Uma forma de evitar esse problema é avaliar quando o atuador é saturado e parar de incrementar o termo integrador, ou então zerá-lo. Uma forma ainda mais interessante é decrementar o termo integral de forma dinâmica em função de uma constante de tempo $T_{t}$ (\emph{tracking-time}), que indica quão rápido isso acontecerá, e da diferença entre a saturação e saída do controlador. $T_{t}$ deve ser maior que $T_{d}$ e menor que $T_{i}$. Sugere-se utilizar $T_{t}=\sqrt{T_{i}T_{d}}$.
+			
+			\tikzstyle{block} = [draw, fill=blue!10, rectangle, 
+			minimum height=2.5em, minimum width=3em]
+			\tikzstyle{sum} = [draw, fill=blue!10, circle, node distance=1cm]
+			\tikzstyle{input} = [coordinate]
+			\tikzstyle{output} = [coordinate]
+			\tikzstyle{auxiliar} = [coordinate]
+			\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+	
+			\begin{center}			
+				\begin{tikzpicture}[auto, node distance=1.5cm,>=latex']
+				% We start by placing the blocks
+				\node [input, name=input1] {};
+				\node [block, right of=input1, node distance=4.2cm] (derivativo) {$\frac{sT_{d}}{1+sT_{d}/N}$};
+				\node [input, name=input2, below of=input1] {};
+				\node [block, right of=input2, node distance=1.5cm] (b) {$b$};
+				\node [sum, right of=b, node distance=1.2cm] (sum1) {};
+				\node [auxiliar, name=aux1, above of=sum1] {};
+				\node [sum, right of=sum1, node distance=3cm] (sum2) {};
+				\node [block, right of=sum2, node distance=2.5cm] (atuador) {Atuador};
+				\node [output, right of=atuador, node distance=2cm] (output) {};
+				\node [input, name=input3, below of=input2] {};
+				\node [block, right of=input3, node distance=1.5cm] (Tint) {$\frac{1}{T_{i}}$};
+				\node [sum, below of=sum1, node distance=1.5cm] (sum3) {};
+				\node [block, right of=sum3] (integrador) {$\frac{1}{s}$};
+				\node [block, below of=integrador] (Tt) {$\frac{1}{T_{t}}$};
+				\node [sum, below of=atuador, node distance=2cm] (sum4) {};
+												
+				% We draw an edge between the controller and system block to 
+				% calculate the coordinate u. We need it to place the measurement block. 
+				% Once the nodes are placed, connecting them is easy. 
+				\draw [->] (input1) -- node [name =y, pos=0.05] {$-y$} (derivativo);
+				\draw [->] (input2) -- node [pos=0.05]{$u_{c}$} (b);
+				\draw [->] (input3) -- node [name=e, pos=0.05] {$e$} (Tint);
+				\draw [->] (b) -- node {} (sum1);
+				\draw [->] (aux1) -- node[pos=0.94] {$+$} (sum1);
+				\draw [->] (derivativo) -| node[pos=0.94] {$+$} (sum2);
+				\draw [->] (sum1) -- node {} (sum2);
+				\draw [->] (sum2) -- node [name=v] {$v$} (atuador);
+				\draw [->] (atuador) -- node [name=u] {$u$}(output);
+				\draw [->] (Tint) -- node {} (sum3);
+				\draw [->] (sum3) -- node {} (integrador);
+				\draw [->] (integrador) -| node[pos=0.94] {$+$} (sum2);
+				\draw [->] (Tt) -| node[pos=0.94] {$+$} (sum3);
+				\draw [->] (sum4) |- node [near start] {$e_{s}$} (Tt);
+				\draw [->] (u) |- node[above, pos=0.94] {$+$} (sum4);
+				\draw [->] (v) |- node[pos=0.94] {$-$} (sum4);				
+%				\draw [->] (sum) -- node {$e$} (controller);
+%				\draw [->] (controller) -- node[name=u] {$u$} (system);
+%				\draw [->] (system) -- node [name=y] {$y$}(output);
+%				\draw [->] (y) |- (measurements);
+%				\draw [->] (measurements) -| node[pos=0.99] {$-$} 
+%				node [near end] {$y_m$} (sum);
+				\end{tikzpicture}
+			\end{center}
+		
+\subsection{Discretização}
+	
+	Para implementar uma lei de controle em tempo real numa plataforma digital, como os microcontroladores e computadores, é necessário converter as equações diferenciais em equações algébricas. Esse processo é denominado discretização.
+	
+	O controlador PID apresentado na equação (\ref{eq_pid_s_b}), por se tratar de uma equação relativamente simples, pode ser discretizado utilizando métodos tradicionais como de Euler, das diferenças ou de Tustin. Abaixo é apresentado a aproximação por esses métodos.
+	
+	\subsubsection{Termo proporcional}
+		
+		O termo proporcional, separadamente, tem a seguinte forma:
+		\begin{equation}
+			P = K(b\, u_{c} - y)
+		\end{equation}
+		
+		Este termo não possui equações diferenciais, portanto não necessita de aproximação. Na forma discreta 
+		
+		\begin{equation}
+			P(k) = K\left(b\, u_{c}(k) - y(k)\right)
+		\end{equation}
+		
+		No qual $k$ é o instante e $h$ o tempo de atualização do controlador na plataforma digital.
+	
+	\subsubsection{Termo integral}
+	
+		O termo integral, separadamente, tem a seguinte forma:
+		
+		\begin{equation}
+			I(t)=\frac{K}{T_{i}} \int_{0}^{t}e(\tau)d\tau
+		\end{equation}
+	
+		Pode ser representado em equações de diferenças
+	
+		\begin{equation}
+			\frac{dI}{dt} = \frac{K}{T_{i}}\:e
+		\end{equation}
+	
+	
+		Aproximando o termo integral com o \textbf{método de Euler (\emph{forward difference}):}
+	
+		\begin{equation}
+			I(k + 1) = I(k) + \frac{Kh}{T_{i}}\:e(k)
+		\end{equation}
+	
+		Pelo \textbf{método das diferenças (\emph{backward differences}):}
+		
+		\begin{equation}
+			I(k + 1) = I(k) + \frac{Kh}{T_{i}}\:e(k+1)
+		\end{equation}
+
+		Pelo \textbf{método de Tustin (bilinear ou trapezoidal):}
+		
+		\begin{equation}
+			I(k + 1) = I(k) + \frac{Kh}{T_{i}} \: \frac{e(k+1) + e(k)}{2}
+		\end{equation}
+	
+	\subsubsection{Termo derivativo}
+	
+		O termo derivativo, separadamente e considerando a aproximação realizada na seção \ref{aprox_derivativo}, tem a seguinte forma:
+	
+		\begin{equation}
+			D = -\frac{T_{d}}{N} \, \frac{dD}{dt} - KT_{d} \, \frac{dy}{dt}
+		\end{equation}
+	
+		Sendo uma equação de diferenças pode ser aproximado pelos mesmos métodos utilizados anteriormente para o termo integral.
+		
+		Pelo \textbf{método de Euler (\emph{forward difference}):}
+
+		\begin{equation}
+			D(k+1) = \left(1 - \frac{Nh}{T_{d}} \right)D(k) - KN \left(y(k+1) - y(k)\right)
+		\end{equation}
+		
+		Essa aproximação requer $T_{d} > Nh/2$ e se torna instável para valores muito pequenos de $T_{d}$.
+		
+		Pelo \textbf{método das diferenças (\emph{backward differences}):}
+		
+		\begin{equation}
+			D(k) = \frac{T_{d}}{T_{d} + Nh} \, D(k-1) - \frac{KT_{d}N}{T_{d}+Nh} \left(y(k) - y(k-1)\right)
+		\end{equation}
+		
+		Este método tem a vantagem de que ele é sempre estável e que o pólo amostrado vai para zero quando $T_{d}$ vai a zero. O método de \emph{Tustin} dá uma aproximação de modo que o pólo vai para $-1$ quando $T_{d}$ vai para zero.
+		
+		Pelo \textbf{método de \emph{Tustin} (bilinear ou trapezoidal):}
+		
+		\begin{equation}
+			D(k) = \frac{2T_{d}-Nh}{2T_{d} + Nh} \, D(k-1) - \frac{2KT_{d}N}{2T_{d}+Nh} \left(y(k) - y(k-1)\right)
+		\end{equation}	
+
+%\subsection{Pseudo-código}
+%
+%
+%\begin{algorithm}
+%	\caption{PID}
+%	\begin{algorithmic}[1]
+%	
+%	\State $uc$ 		\Comment{sinal de controle}
+%	\State $y$			\Comment{variável controlada}
+%	\State $yold$		\Comment{variável controlada anterior}
+%	\State $v$			\Comment{saída do controlador}
+%	\State $u$			\Comment{saída tratada do controlador}
+%	\State $I$			\Comment{termo integrador}
+%	\State $D$			\Comment{termo derivativo}
+%	\State $K$			\Comment{ganho do controlador}
+%	\State $Ti$			\Comment{tempo integrativo}
+%	\State $Td$			\Comment{tempo derivativo}
+%	\State $Tt$			\Comment{tracking-time}
+%	\State $N$			\Comment{evitar ruidos (entre 8 e 20)}
+%	\State $b$			\Comment{fração do termo proporcional (default 1)}
+%	\State $ulow$		\Comment{limite inferior de saturação}
+%	\State $uhigh$		\Comment{limite superior de saturação}
+%	\State $h$			\Comment{tempo de atualização do controlador}
+%	\State $bi$			\Comment{auxilar para o integrador}
+%	\State $ar$			\Comment{auxiliar para o integrador}
+%	\State $bd$			\Comment{auxiliar para o derivativo}
+%	\State $ad$			\Comment{auxiliar para o derivativo}
+%
+%	\State
+%			
+%	\State $bi \leftarrow K*h/Ti$
+%	\State $ar \leftarrow h/Tt$
+%	\State $bd \leftarrow K*N*Td/(Td + N*h)$
+%	\State $ad \leftarrow Td/(Td + N*h)$
+%	
+%	\State
+%	
+%	\Function{AtualizaSaida}{}
+%	\State
+%	\Loop
+%	\State $P \leftarrow K*(b*uc - y)$
+%	\State $D \leftarrow ad*D - bd*(y - yold)$
+%	
+%	\State $v \leftarrow P + I + D$
+%	
+%	\If {$v < ulow$}
+%	\State	$u \leftarrow ulow$
+%	\ElsIf {$v > uhigh$}
+%	\State $u \leftarrow uhigh$
+%	\Else
+%	\State $u \leftarrow v$
+%	\EndIf
+%	
+%	\State
+%	%Executa u
+%	
+%	\State	$I \leftarrow I + bi*(uc - y) + ar*(u - v)$
+%	\State	$yold \leftarrow y$
+%	
+%	\State
+%	
+%	\While{$i < h$}
+%	\State $i++$ 
+%	\EndWhile
+%			
+%	\EndLoop	
+%	
+%	\State
+%	
+%	\EndFunction
+%
+%	\end{algorithmic}
+%\end{algorithm}
+
+
+\pagebreak
+
+\nocite{*}
+
+\bibliographystyle{authordate1}
+\bibliography{controlador_pid}
+
+
+\end{document}
