@@ -65,15 +65,10 @@ void Button1_Handler(uint32_t id, uint32_t mask)
 	/*Botão 1 aumenta o duty cicle (ul_duty)*/
 	if (PIN_PUSHBUTTON_1_ID == id && PIN_PUSHBUTTON_1_MASK == mask) {
 
-		if (ul_duty == 0)
-		{
-			flag_hab_m = 1;
-		}
+		if (ul_duty == 0) flag_hab_m = 1;
+				
+		if(ul_duty < PERIOD_VALUE) ul_duty++;
 		
-		
-		if(ul_duty < PERIOD_VALUE) {
-			ul_duty++;
-		}
 	}
 }
 
@@ -82,9 +77,8 @@ void Button2_Handler(uint32_t id, uint32_t mask)
 	/*Botão 2 diminui o duty cicle (ul_duty)*/
 	if (PIN_PUSHBUTTON_2_ID == id && PIN_PUSHBUTTON_2_MASK == mask) {
 	
-		if(ul_duty > INIT_DUTY_VALUE){
-		ul_duty--;
-		}
+		if(ul_duty > INIT_DUTY_VALUE) ul_duty--;
+		
 	}
 }
 
@@ -99,10 +93,7 @@ void Hall_Phase(void)
 
 	hall_code = (hall_3<<2) | (hall_2<<1) | (hall_1);
 	
-	if (sel_rot)
-		{
-			hall_code = ~hall_code;
-		}
+	if (sel_rot) hall_code = ~hall_code;
 
 	switch (hall_code & 0b00000111){
 	
@@ -182,8 +173,6 @@ void Hall_Handler(uint32_t id, uint32_t mask)
 	{
 		Hall_Phase();
 	}
-	
-	return;
 }
 
 int main(void)
@@ -250,7 +239,7 @@ int main(void)
 		uc_char = 0;
 		uc_flag = uart_read(CONSOLE_UART, &uc_char);
 		if (!uc_flag) {
-		if (uc_char == 's') {
+			if (uc_char == 's') {
 				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 				printf("  hall1 = %u \r\n", hall_1);
 				printf("  hall2 = %u \r\n", hall_2);
