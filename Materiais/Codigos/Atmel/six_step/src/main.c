@@ -198,7 +198,8 @@ int main(void)
 	
 	printf("-- six-step --\r\n");
 	printf("-- %s\n\r", BOARD_NAME);
-	printf("-- Compiled: %s %s --\n\r", __DATE__, __TIME__);
+	printf("-- Caue Menegaldo \n\r");
+	printf("-- Compiled: %s %s --\n\n\r", __DATE__, __TIME__);
 	
 	configure_lcd();
 	g_pwm_channel = configure_pwm();
@@ -250,11 +251,11 @@ int main(void)
 		uc_flag = uart_read(CONSOLE_UART, &uc_char);
 		if (!uc_flag) {
 		if (uc_char == 's') {
-				printf("duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
-				printf("hall1 = %u", hall_1);
-				printf("hall2 = %u", hall_2);
-				printf("hall3 = %u", hall_3);
-				printf("phase = %u", phase);
+				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
+				printf("  hall1 = %u \r\n", hall_1);
+				printf("  hall2 = %u \r\n", hall_2);
+				printf("  hall3 = %u \r\n", hall_3);
+				printf("  phase = %u \r\n\n", phase);
 			}
 		}
 	}
