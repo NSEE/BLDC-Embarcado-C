@@ -16,6 +16,8 @@
 #include "stdio.h"
 #include "lcd_aux.h"
 #include "six_step.h"
+//#include "touch_api.h"
+//#include "conf_example.h"
 #include <delay.h>
 
 uint32_t pos_lcd_x;
@@ -36,12 +38,10 @@ pwm_channel_t g_pwm_channel;
 
 static uint32_t ul_duty = INIT_DUTY_VALUE;  /* PWM duty cycle rate */
 
-
 void SPI_Handler(void)
 {
 	ili9225_spi_handler();
 }
-
 
 void PWM_Handler(void)
 {
@@ -183,26 +183,17 @@ int main(void)
 	board_init();
 	configure_buttons();
 	configure_hall();
+
 	configure_console();
-	
-	printf("-- six-step --\r\n");
-	printf("-- %s\n\r", BOARD_NAME);
-	printf("-- Caue Menegaldo \n\r");
-	printf("-- Compiled: %s %s --\n\n\r", __DATE__, __TIME__);
+	printf(STRING_HEADER);
 	
 	configure_lcd();
 	g_pwm_channel = configure_pwm();
 
 	/* Cabeçalho do lcd */
-	ili9225_set_foreground_color(COLOR_BLACK);
-	ili9225_draw_string(40, 20, (uint8_t *)"six-step");
 	pos_lcd_x = 20;
 	pos_lcd_y = 40;
-	escreve_int_lcd("dc = ", ul_duty, pos_lcd_x, 40);
-	escreve_int_lcd("hall1 = ", hall_1, pos_lcd_x, 60);
-	escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 80);
-	escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 100);
-	escreve_int_lcd("phase = ", phase, pos_lcd_x, 120);
+	start_lcd(pos_lcd_x, pos_lcd_y, ul_duty, hall_1, hall_2, hall_3, phase);
 
 	/* Infinite loop */
 	while (1) {
@@ -241,9 +232,9 @@ int main(void)
 		if (!uc_flag) {
 			if (uc_char == 's') {
 				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
-				printf("  hall1 = %u \r\n", hall_1);
-				printf("  hall2 = %u \r\n", hall_2);
-				printf("  hall3 = %u \r\n", hall_3);
+				printf("  hall1 = %lu \r\n", hall_1);
+				printf("  hall2 = %lu \r\n", hall_2);
+				printf("  hall3 = %lu \r\n", hall_3);
 				printf("  phase = %u \r\n\n", phase);
 			}
 		}

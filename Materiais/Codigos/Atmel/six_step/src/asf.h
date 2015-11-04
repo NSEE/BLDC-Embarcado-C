@@ -52,6 +52,12 @@
  * running the ASF driver selector tool. Any changes will be discarded.
  */
 
+// From module: Atmel QTouch Library 4.4 for Atmel SAM3N devices
+#include <touch_api.h>
+
+// From module: Atmel QTouch Library for QTouch Method in SAM devices
+#include <touch_qt_config.h>
+
 // From module: Common SAM compiler driver
 #include <compiler.h>
 #include <status_codes.h>
@@ -117,6 +123,9 @@
 
 // From module: USART - Univ. Syn Async Rec/Trans
 #include <usart.h>
+
+// From module: WDT - Watchdog Timer
+#include <wdt.h>
 
 // From module: pio_handler support enabled
 #include <pio_handler.h>

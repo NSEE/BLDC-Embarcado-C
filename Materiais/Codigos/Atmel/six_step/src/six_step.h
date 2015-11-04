@@ -4,7 +4,8 @@
 #include "asf.h"
 #include "conf_board.h"
 #include "conf_clock.h"
-
+#include "stdio.h"
+#include "lcd_aux.h"
 
 #define IRQ_PRIOR_PIO    0
 
@@ -36,19 +37,19 @@
 #define PIN_PWM_IN1_GPIO    PIO_PB0_IDX
 #define PIN_PWM_IN1_FLAGS   (PIO_PERIPH_A | PIO_DEFAULT)
 #define PIN_PWM_IN1_CHANNEL PWM_CHANNEL_0
-#define PIN_PWM_EN1_GPIO    PIO_PC16_IDX
+#define PIN_PWM_EN1_GPIO    PIO_PA5_IDX
 #define PIN_PWM_EN1_FLAGS	(PIO_OUTPUT_0 | PIO_DEFAULT)
 
 #define PIN_PWM_IN2_GPIO    PIO_PB1_IDX
 #define PIN_PWM_IN2_FLAGS   (PIO_PERIPH_A | PIO_DEFAULT)
 #define PIN_PWM_IN2_CHANNEL PWM_CHANNEL_1
-#define PIN_PWM_EN2_GPIO    PIO_PC17_IDX
+#define PIN_PWM_EN2_GPIO    PIO_PA6_IDX
 #define PIN_PWM_EN2_FLAGS	(PIO_OUTPUT_0 | PIO_DEFAULT)
 
 #define PIN_PWM_IN3_GPIO    PIO_PB14_IDX
 #define PIN_PWM_IN3_FLAGS   (PIO_PERIPH_B | PIO_DEFAULT)
 #define PIN_PWM_IN3_CHANNEL PWM_CHANNEL_3
-#define PIN_PWM_EN3_GPIO    PIO_PC18_IDX
+#define PIN_PWM_EN3_GPIO    PIO_PA21_IDX
 #define PIN_PWM_EN3_FLAGS	(PIO_OUTPUT_0 | PIO_DEFAULT)
 
 
@@ -61,6 +62,13 @@
 /** Initial duty cycle value */
 #define INIT_DUTY_VALUE    0
 
+/* =============== HEADER USART =============== */
+#define STRING_EOL    "\n\r"
+#define STRING_HEADER	"-- six-step --\n\r" \
+						"-- "BOARD_NAME" --\n\r" \
+						"-- Caue Menegaldo \n\r"\
+						"-- Compiled: "__DATE__" "__TIME__" --"STRING_EOL
+
 /* =============== Prototypes =============== */
 void Hall_Phase(void);
 void configure_hall(void);
@@ -69,5 +77,5 @@ void Button1_Handler(uint32_t id, uint32_t mask);
 void Button2_Handler(uint32_t id, uint32_t mask);
 void Hall_Handler(uint32_t id, uint32_t mask);
 pwm_channel_t configure_pwm(void);
-
+void start_lcd(uint32_t pos_lcd_x, uint32_t pos_lcd_y, uint32_t ul_duty, uint32_t hall_1, uint32_t hall_2, uint32_t hall_3, uint8_t phase);
 #endif

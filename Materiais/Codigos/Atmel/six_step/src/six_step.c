@@ -119,10 +119,21 @@ pwm_channel_t configure_pwm(void)
 	//NVIC_SetPriority(PWM_IRQn, 0);
 	//NVIC_EnableIRQ(PWM_IRQn);
 	
-	/* Enable PWM channels for LEDs */
+	/* Enable PWM channels for Motors */
 	pwm_channel_enable(PWM, PIN_PWM_IN1_CHANNEL);
 	pwm_channel_enable(PWM, PIN_PWM_IN2_CHANNEL);
 	pwm_channel_enable(PWM, PIN_PWM_IN3_CHANNEL);
 	
 	return g_pwm_channel;
+}
+
+void start_lcd(uint32_t pos_lcd_x, uint32_t pos_lcd_y, uint32_t ul_duty, uint32_t hall_1, uint32_t hall_2, uint32_t hall_3, uint8_t phase)
+{
+	ili9225_set_foreground_color(COLOR_BLACK);
+	ili9225_draw_string(40, 20, (uint8_t *)"six-step");
+	escreve_int_lcd("dc = ", ul_duty, pos_lcd_x, 40);
+	escreve_int_lcd("hall1 = ", hall_1, pos_lcd_x, 60);
+	escreve_int_lcd("hall2 = ", hall_2, pos_lcd_x, 80);
+	escreve_int_lcd("hall3 = ", hall_3, pos_lcd_x, 100);
+	escreve_int_lcd("phase = ", phase, pos_lcd_x, 120);
 }
