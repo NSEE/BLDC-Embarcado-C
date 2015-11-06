@@ -28,6 +28,8 @@ uint32_t hall_2 = 0;
 uint32_t hall_3 = 0;
 
 uint8_t phase = 0;
+uint8_t motor_run = 0;
+uint8_t motor_aux = 0;
 
 static bool flag_hab_m = 0;
 static bool sel_rot = 0;
@@ -223,6 +225,8 @@ void Hall_Handler(uint32_t id, uint32_t mask)
 		(PIN_HALL_3_ID == id && PIN_HALL_3_MASK == mask))
 	{
 		Hall_Phase();
+		if(motor_aux<3)motor_aux++;
+		else motor_run = 1;
 	}
 }
 
@@ -322,6 +326,9 @@ int main(void)
 			flag_hab_m = 0;
 		}
 		
+		if(ul_duty == 0)
+			motor_run = 0;
+		
 		uc_char = 0;
 		uc_flag = uart_read(CONSOLE_UART, &uc_char);
 		if (!uc_flag) {
@@ -333,12 +340,12 @@ int main(void)
 				printf("  phase = %u \r\n\n", phase);
 			}
 			if (uc_char == 'a'){				
-				if (ul_duty == 0) flag_hab_m = 1;
+				if (motor_run==0) flag_hab_m = 1;
 				if(ul_duty < PERIOD_VALUE) ul_duty++;
 				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 			}
 			if (uc_char == 's'){
-				if (ul_duty == 0) flag_hab_m = 1;
+				if (motor_run==0) flag_hab_m = 1;
 				if(ul_duty > INIT_DUTY_VALUE) ul_duty--;
 				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 			}
@@ -366,7 +373,7 @@ int main(void)
 		if ((GET_SENSOR_STATE(BOARD_LEFT_KEY_ID) != 0)
 		&& (lft_pressed == 0)) {
 			lft_pressed = 1;
-			if (ul_duty == 0) flag_hab_m = 1;
+			if (motor_run==0) flag_hab_m = 1;
 			if(ul_duty > INIT_DUTY_VALUE) ul_duty--;
 			printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 			} else {
@@ -378,7 +385,7 @@ int main(void)
 		if ((GET_SENSOR_STATE(BOARD_RIGHT_KEY_ID) != 0)
 		&& (rgt_pressed == 0)) {
 			rgt_pressed = 1;
-			if (ul_duty == 0) flag_hab_m = 1;
+			if (motor_run==0) flag_hab_m = 1;
 			if(ul_duty < PERIOD_VALUE) ul_duty++;
 			printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 			} else {
@@ -391,8 +398,8 @@ int main(void)
 
 		if (GET_ROTOR_SLIDER_POSITION(0) != old_position) {
 			old_position = GET_ROTOR_SLIDER_POSITION(0);
-			if (ul_duty == 0) flag_hab_m = 1;
-			ul_duty = old_position/25;
+			if (motor_run==0) flag_hab_m = 1;
+			ul_duty = old_position*PERIOD_VALUE/255;
 			printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 		}
 	}
