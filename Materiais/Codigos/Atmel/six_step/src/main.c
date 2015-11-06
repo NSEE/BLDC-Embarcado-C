@@ -230,12 +230,22 @@ int main(void)
 		uc_char = 0;
 		uc_flag = uart_read(CONSOLE_UART, &uc_char);
 		if (!uc_flag) {
-			if (uc_char == 's') {
+			if (uc_char == 't') {
 				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 				printf("  hall1 = %lu \r\n", hall_1);
 				printf("  hall2 = %lu \r\n", hall_2);
 				printf("  hall3 = %lu \r\n", hall_3);
 				printf("  phase = %u \r\n\n", phase);
+			}
+			if (uc_char == 'a'){				
+				if (ul_duty == 0) flag_hab_m = 1;
+				if(ul_duty < PERIOD_VALUE) ul_duty++;
+				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
+			}
+			if (uc_char == 's'){
+				if (ul_duty == 0) flag_hab_m = 1;
+				if(ul_duty > INIT_DUTY_VALUE) ul_duty--;
+				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 			}
 		}
 	}

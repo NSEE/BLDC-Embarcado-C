@@ -67,7 +67,10 @@
 #define STRING_HEADER	"-- six-step --\n\r" \
 						"-- "BOARD_NAME" --\n\r" \
 						"-- Caue Menegaldo \n\r"\
-						"-- Compiled: "__DATE__" "__TIME__" --"STRING_EOL
+						"-- Compiled: "__DATE__" "__TIME__" --"STRING_EOL\
+						"-- Pressione t para apresentar os dados na tela;"STRING_EOL\
+						"-- Pressione a para aumentar o duty-cicle;"STRING_EOL\
+						"-- Pressione s para diminuir o duty-cicle;"STRING_EOL\
 
 /* =============== Prototypes =============== */
 void Hall_Phase(void);
