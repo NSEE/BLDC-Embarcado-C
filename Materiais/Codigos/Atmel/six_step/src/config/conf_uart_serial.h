@@ -54,4 +54,13 @@
 /** Parity setting */
 #define CONF_UART_PARITY     UART_MR_PAR_NO
 
+/* Configure UART pins PIO */
+#define CONF_UART_PIO PINS_UART0_PIO
+
+/* Configure UART pins */
+#define CONF_PINS_UART PINS_UART0
+
+/* Configure UART pins flags */
+#define CONF_PINS_UART_FLAGS PINS_UART0_FLAGS
+
 #endif/* CONF_USART_SERIAL_H_INCLUDED */

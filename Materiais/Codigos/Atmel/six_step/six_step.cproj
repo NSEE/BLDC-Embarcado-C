@@ -382,12 +382,16 @@
   <armgcc.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>DEBUG</Value>
+      <Value>QT_DELAY_CYCLES=3</Value>
       <Value>scanf=iscanf</Value>
       <Value>BOARD=SAM3N_EK</Value>
       <Value>__SAM3N4C__</Value>
       <Value>ARM_MATH_CM3=true</Value>
       <Value>printf=iprintf</Value>
       <Value>_QTOUCH_</Value>
+      <Value>SNSK1=C</Value>
+      <Value>_SNS1_SNSK1_SAME_PORT_</Value>
+      <Value>SNS1=C</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.DefaultIncludePath>False</armgcc.compiler.directories.DefaultIncludePath>
@@ -450,6 +454,7 @@
     </ListValues>
   </armgcc.linker.libraries.LibrarySearchPaths>
   <armgcc.linker.optimization.GarbageCollectUnusedSections>True</armgcc.linker.optimization.GarbageCollectUnusedSections>
+  <armgcc.linker.memorysettings.ExternalRAM />
   <armgcc.linker.miscellaneous.LinkerFlags>-Wl,--entry=Reset_Handler -Wl,--cref -mthumb -T../src/ASF/sam/utils/linker_scripts/sam3n/sam3n4/gcc/flash.ld</armgcc.linker.miscellaneous.LinkerFlags>
   <armgcc.assembler.debugging.DebugLevel>Default (-g)</armgcc.assembler.debugging.DebugLevel>
   <armgcc.preprocessingassembler.general.AssemblerFlags>-DARM_MATH_CM3=true -DBOARD=SAM3N_EK -D__SAM3N4C__ -Dprintf=iprintf -Dscanf=iscanf -D_QTOUCH_</armgcc.preprocessingassembler.general.AssemblerFlags>
@@ -594,9 +599,6 @@
     <None Include="src\ASF\thirdparty\qtouch\generic\include\touch_api.h">
       <SubType>compile</SubType>
     </None>
-    <Compile Include="src\config\conf_example.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="src\pwm_aux.c">
       <SubType>compile</SubType>
     </Compile>

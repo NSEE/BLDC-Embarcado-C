@@ -6,6 +6,7 @@
 #include "conf_clock.h"
 #include "stdio.h"
 #include "lcd_aux.h"
+#include "touch_api.h"
 
 #define IRQ_PRIOR_PIO    0
 
@@ -64,13 +65,59 @@
 
 /* =============== HEADER USART =============== */
 #define STRING_EOL    "\n\r"
-#define STRING_HEADER	"-- six-step --\n\r" \
-						"-- "BOARD_NAME" --\n\r" \
-						"-- Caue Menegaldo \n\r"\
-						"-- Compiled: "__DATE__" "__TIME__" --"STRING_EOL\
-						"-- Pressione t para apresentar os dados na tela;"STRING_EOL\
-						"-- Pressione a para aumentar o duty-cicle;"STRING_EOL\
-						"-- Pressione s para diminuir o duty-cicle;"STRING_EOL\
+#define STRING_HEADER	STRING_EOL\
+						"   ACIONAMENTO SIX-STEP DO MOTOR BLDC	"STRING_EOL \
+							STRING_EOL\
+						"	Para controlador o duty cicle de acionamento do bldc pode-se utilizar o teclado ou o touch da placa.\n\r"STRING_EOL\
+						"	Para utilizar o teclado:"STRING_EOL\
+						"   Pressione t para apresentar os dados do bldc na tela;"STRING_EOL\
+						"   Pressione a para aumentar o duty-cicle;"STRING_EOL\
+						"   Pressione s para diminuir o duty-cicle;"STRING_EOL\
+						STRING_EOL\
+						"	Para utilizar o touch:"STRING_EOL\
+						"   Pressione a seta para a direita para aumentar o duty-cicle;"STRING_EOL\
+						"   Pressione a seta para a esquerda para diminuir o duty-cicle;"STRING_EOL\
+						"   Utilize o barcode para aumentar e diminuir o duty-cicle;"STRING_EOL\
+
+/* =============== QTOUCH =============== */
+/** Qtouch key number */
+#define BOARD_KEY_NUM_2
+/** The PIO numbers for silder is before key */
+#define BOARD_SILDER_BEFOR_KEY
+/** Qtouch left key ID */
+#define BOARD_LEFT_KEY_ID    1
+/** Qtouch right key ID */
+#define BOARD_RIGHT_KEY_ID    2
+/** Qtouch left key channel */
+#define BOARD_LEFT_KEY_CHANNEL    CHANNEL_4
+/** Qtouch right key channel */
+#define BOARD_RIGHT_KEY_CHANNEL    CHANNEL_5
+/** Qtouch slider start channel */
+#define BOARD_SLIDER_START_CHANNEL    CHANNEL_0
+/** Qtouch slider end channel */
+#define BOARD_SLIDER_END_CHANNEL    CHANNEL_2
+
+/** Qtouch library type: Qtouch / QMatrix */
+#define QTOUCH_LIB_TPYE_MASK    0x01
+/** Qtouch library compiler type offset: GCC / IAR */
+#define QTOUCH_LIB_COMPILER_OFFSET    2
+/** Qtouch library compiler type mask */
+#define QTOUCH_LIB_COMPILER_MASK    0x01
+/** Qtouch library maximum channels offset */
+#define QTOUCH_LIB_MAX_CHANNEL_OFFSET    3
+/** Qtouch library maximum channels mask */
+#define QTOUCH_LIB_MAX_CHANNEL_MASK   0x7F
+/** Qtouch library supports keys only offset */
+#define QTOUCH_LIB_KEY_ONLY_OFFSET    10
+/** Qtouch library supports keys only mask */
+#define QTOUCH_LIB_KEY_ONLY_MASK   0x01
+/** Qtouch library maximum rotors/silders offset */
+#define QTOUCH_LIB_ROTOR_NUM_OFFSET    11
+/** Qtouch library maximum rotors/silders mask */
+#define QTOUCH_LIB_ROTOR_NUM_MASK   0x1F
+
+#define GET_SENSOR_STATE(SENSOR_NUMBER) (qt_measure_data.qt_touch_status.sensor_states[(SENSOR_NUMBER/8)] & (1 << (SENSOR_NUMBER % 8)))
+#define GET_ROTOR_SLIDER_POSITION(ROTOR_SLIDER_NUMBER) qt_measure_data.qt_touch_status.rotor_slider_values[ROTOR_SLIDER_NUMBER]
 
 /* =============== Prototypes =============== */
 void Hall_Phase(void);

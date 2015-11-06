@@ -16,8 +16,7 @@
 #include "stdio.h"
 #include "lcd_aux.h"
 #include "six_step.h"
-//#include "touch_api.h"
-//#include "conf_example.h"
+#include "touch_api.h"
 #include <delay.h>
 
 uint32_t pos_lcd_x;
@@ -37,6 +36,58 @@ static bool sel_rot = 0;
 pwm_channel_t g_pwm_channel;
 
 static uint32_t ul_duty = INIT_DUTY_VALUE;  /* PWM duty cycle rate */
+
+/* Flag set by timer ISR when it's time to measure touch */
+static volatile uint8_t time_to_measure_touch = 0u;
+
+/* Current time, set by timer ISR */
+static volatile uint16_t current_time_ms_touch = 0u;
+
+/* Timer period in msec */
+uint16_t qt_measurement_period_msec = 25u;
+
+void SysTick_Handler(void)
+{
+	/* Set flag: it's time to measure touch */
+	time_to_measure_touch = 1u;
+
+	/* Update the current time */
+	current_time_ms_touch += qt_measurement_period_msec;
+}
+
+static void init_timer_isr(void)
+{
+	if (SysTick_Config((sysclk_get_cpu_hz() / 1000) *
+					qt_measurement_period_msec)) {
+		printf("-F- Systick configuration error\n\r");
+	}
+}
+
+/**
+ * \brief This will fill the default threshold values in the configuration
+ * data structure.But User can change the values of these parameters.
+ */
+static void qt_set_parameters(void)
+{
+	qt_config_data.qt_di = DEF_QT_DI;
+	qt_config_data.qt_neg_drift_rate = DEF_QT_NEG_DRIFT_RATE;
+	qt_config_data.qt_pos_drift_rate = DEF_QT_POS_DRIFT_RATE;
+	qt_config_data.qt_max_on_duration = DEF_QT_MAX_ON_DURATION;
+	qt_config_data.qt_drift_hold_time = DEF_QT_DRIFT_HOLD_TIME;
+	qt_config_data.qt_recal_threshold = DEF_QT_RECAL_THRESHOLD;
+	qt_config_data.qt_pos_recal_delay = DEF_QT_POS_RECAL_DELAY;
+}
+
+/**
+ * \brief Configure the sensors.
+ */
+static void config_sensors(void)
+{
+	qt_enable_slider(BOARD_SLIDER_START_CHANNEL, BOARD_SLIDER_END_CHANNEL,
+			AKS_GROUP_1, 16u, HYST_6_25, RES_8_BIT, 0u);
+	qt_enable_key(BOARD_LEFT_KEY_CHANNEL, AKS_GROUP_1, 18u, HYST_6_25);
+	qt_enable_key(BOARD_RIGHT_KEY_CHANNEL, AKS_GROUP_1, 18u, HYST_6_25);
+}
 
 void SPI_Handler(void)
 {
@@ -177,12 +228,56 @@ void Hall_Handler(uint32_t id, uint32_t mask)
 
 int main(void)
 {
+		/*Status flags to indicate the re-burst for library */
+	uint16_t status_flag = 0u;
+	uint16_t burst_flag = 0u;
+
+	uint8_t lft_pressed = 0;
+	uint8_t rgt_pressed = 0;
+
+	static uint8_t old_position = 0;
+
 	uint8_t uc_char;
 	uint8_t uc_flag;
 	sysclk_init();
 	board_init();
 	configure_buttons();
 	configure_hall();
+
+	/* Disable the watchdog */
+	wdt_disable(WDT);
+
+//	sysclk_init();
+
+//	configure_console();
+
+	/* Output example information */
+//	printf(STRING_HEADER);
+
+	/* Enable PMC clock for key/silder PIOs  */
+
+	pmc_enable_periph_clk(ID_PIOC);
+
+	/* Reset touch sensing */
+	qt_reset_sensing();
+
+	/* Configure the Sensors as keys or Keys With Rotor/Sliders in this function */
+	config_sensors();
+
+	/* Initialise touch sensing */
+	qt_init_sensing();
+
+	/* Set the parameters like recalibration threshold, Max_On_Duration etc in this function by the user */
+	qt_set_parameters();
+
+	/* Configure timer ISR to fire regularly */
+	init_timer_isr();
+
+	/* Address to pass address of user functions */
+	/* This function is called after the library has made capacitive measurements,
+	 * but before it has processed them. The user can use this hook to apply filter
+	 * functions to the measured signal values.(Possibly to fix sensor layout faults) */
+	qt_filter_callback = 0;
 
 	configure_console();
 	printf(STRING_HEADER);
@@ -247,6 +342,58 @@ int main(void)
 				if(ul_duty > INIT_DUTY_VALUE) ul_duty--;
 				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 			}
+		}
+
+		if (time_to_measure_touch) {
+
+			/* Clear flag: it's time to measure touch */
+			time_to_measure_touch = 0u;
+
+			do {
+				/*  One time measure touch sensors    */
+				status_flag = qt_measure_sensors(current_time_ms_touch);
+
+				burst_flag = status_flag & QTLIB_BURST_AGAIN;
+
+				/*Time critical host application code goes here */
+
+			} while (burst_flag);
+		}
+
+		/*  Time Non-critical host application code goes here */
+
+
+		if ((GET_SENSOR_STATE(BOARD_LEFT_KEY_ID) != 0)
+		&& (lft_pressed == 0)) {
+			lft_pressed = 1;
+			if (ul_duty == 0) flag_hab_m = 1;
+			if(ul_duty > INIT_DUTY_VALUE) ul_duty--;
+			printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
+			} else {
+			if ((GET_SENSOR_STATE(BOARD_LEFT_KEY_ID) == 0)
+			&& (lft_pressed == 1)) {
+				lft_pressed = 0;
+			}
+		}
+		if ((GET_SENSOR_STATE(BOARD_RIGHT_KEY_ID) != 0)
+		&& (rgt_pressed == 0)) {
+			rgt_pressed = 1;
+			if (ul_duty == 0) flag_hab_m = 1;
+			if(ul_duty < PERIOD_VALUE) ul_duty++;
+			printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
+			} else {
+			if ((GET_SENSOR_STATE(BOARD_RIGHT_KEY_ID) == 0)
+			&& (rgt_pressed == 1)) {
+				rgt_pressed = 0;
+			}
+		}
+
+
+		if (GET_ROTOR_SLIDER_POSITION(0) != old_position) {
+			old_position = GET_ROTOR_SLIDER_POSITION(0);
+			if (ul_duty == 0) flag_hab_m = 1;
+			ul_duty = old_position/25;
+			printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 		}
 	}
 }
