@@ -98,19 +98,25 @@ void SPI_Handler(void)
 
 void PWM_Handler(void)
 {
-	//Para utilizar interrupção do pwm configurar e habilitar em six_step.c
+	/* Para utilizar interrupção do pwm configurar e habilitar em six_step.c */
 	
-	//static uint32_t ul_count = 0;  /* PWM counter value */
-	//uint32_t events = pwm_channel_get_interrupt_status(PWM);
-//
-	///* Interrupt on PIN_PWM_IN1_CHANNEL */
-	//if ((events & (1 << PIN_PWM_IN1_CHANNEL)) == (1 << PIN_PWM_IN1_CHANNEL))
-	//{
-		//ul_count++;
-		//if (ul_count == (PWM_FREQUENCY / (PERIOD_VALUE - INIT_DUTY_VALUE))) {
-			//ul_count = 0;
-		//}
-	//}
+	static uint32_t ul_count = 0;  /* PWM counter value */
+	uint32_t events = pwm_channel_get_interrupt_status(PWM);
+
+	/* Interrupt on PIN_PWM_IN1_CHANNEL */
+	if ((events & (1 << PIN_PWM_IN1_CHANNEL)) == (1 << PIN_PWM_IN1_CHANNEL))
+	{
+		ul_count++;
+		if (ul_count == (PWM_FREQUENCY*10 / (PERIOD_VALUE - INIT_DUTY_VALUE))) {
+			ul_count = 0;
+			if(motor_aux!=0)
+			{
+				motor_run = 1;
+				motor_aux = 0;
+			}
+			else motor_run = 0;
+		}
+	}
 }
 
 void Button1_Handler(uint32_t id, uint32_t mask)
@@ -118,7 +124,7 @@ void Button1_Handler(uint32_t id, uint32_t mask)
 	/*Botão 1 aumenta o duty cicle (ul_duty)*/
 	if (PIN_PUSHBUTTON_1_ID == id && PIN_PUSHBUTTON_1_MASK == mask) {
 
-		if (ul_duty == 0) flag_hab_m = 1;
+//		if (ul_duty == 0) flag_hab_m = 1;
 				
 		if(ul_duty < PERIOD_VALUE) ul_duty++;
 		
@@ -225,8 +231,7 @@ void Hall_Handler(uint32_t id, uint32_t mask)
 		(PIN_HALL_3_ID == id && PIN_HALL_3_MASK == mask))
 	{
 		Hall_Phase();
-		if(motor_aux<3)motor_aux++;
-		else motor_run = 1;
+		motor_aux++;
 	}
 }
 
@@ -320,14 +325,8 @@ int main(void)
 			hall_3_aux = hall_3;
 		}
 		
-		if(flag_hab_m && ul_duty != 0)
-		{
+		if(motor_run == 0 && ul_duty != 0)
 			Hall_Phase();
-			flag_hab_m = 0;
-		}
-		
-		if(ul_duty == 0)
-			motor_run = 0;
 		
 		uc_char = 0;
 		uc_flag = uart_read(CONSOLE_UART, &uc_char);
@@ -340,12 +339,10 @@ int main(void)
 				printf("  phase = %u \r\n\n", phase);
 			}
 			if (uc_char == 'a'){				
-				if (motor_run==0) flag_hab_m = 1;
 				if(ul_duty < PERIOD_VALUE) ul_duty++;
 				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 			}
 			if (uc_char == 's'){
-				if (motor_run==0) flag_hab_m = 1;
 				if(ul_duty > INIT_DUTY_VALUE) ul_duty--;
 				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 			}
@@ -373,7 +370,6 @@ int main(void)
 		if ((GET_SENSOR_STATE(BOARD_LEFT_KEY_ID) != 0)
 		&& (lft_pressed == 0)) {
 			lft_pressed = 1;
-			if (motor_run==0) flag_hab_m = 1;
 			if(ul_duty > INIT_DUTY_VALUE) ul_duty--;
 			printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 			} else {
@@ -385,7 +381,6 @@ int main(void)
 		if ((GET_SENSOR_STATE(BOARD_RIGHT_KEY_ID) != 0)
 		&& (rgt_pressed == 0)) {
 			rgt_pressed = 1;
-			if (motor_run==0) flag_hab_m = 1;
 			if(ul_duty < PERIOD_VALUE) ul_duty++;
 			printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 			} else {

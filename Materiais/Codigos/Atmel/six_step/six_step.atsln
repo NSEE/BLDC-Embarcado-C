@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "six_step", "six_step.cproj", "{AF4A0852-DD0A-44DC-9A52-A55B5758D37C}"
 EndProject
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "QTOUCH_EXAMPLE1", "QTOUCH_EXAMPLE1\QTOUCH_EXAMPLE1.cproj", "{32F1D274-A442-4279-93B9-8FB542CC3CC9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -15,10 +13,6 @@ Global
 		{AF4A0852-DD0A-44DC-9A52-A55B5758D37C}.Debug|ARM.Build.0 = Debug|ARM
 		{AF4A0852-DD0A-44DC-9A52-A55B5758D37C}.Release|ARM.ActiveCfg = Release|ARM
 		{AF4A0852-DD0A-44DC-9A52-A55B5758D37C}.Release|ARM.Build.0 = Release|ARM
-		{32F1D274-A442-4279-93B9-8FB542CC3CC9}.Debug|ARM.ActiveCfg = Debug|ARM
-		{32F1D274-A442-4279-93B9-8FB542CC3CC9}.Debug|ARM.Build.0 = Debug|ARM
-		{32F1D274-A442-4279-93B9-8FB542CC3CC9}.Release|ARM.ActiveCfg = Release|ARM
-		{32F1D274-A442-4279-93B9-8FB542CC3CC9}.Release|ARM.Build.0 = Release|ARM
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

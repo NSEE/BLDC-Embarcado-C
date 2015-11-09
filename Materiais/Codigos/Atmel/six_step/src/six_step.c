@@ -114,10 +114,10 @@ pwm_channel_t configure_pwm(void)
 	pwm_channel_disable_interrupt(PWM, PIN_PWM_IN3_CHANNEL, 0);
 	
 	/* Configurar e habilitar interrupção do PWM*/
-	//NVIC_DisableIRQ(PWM_IRQn);
-	//NVIC_ClearPendingIRQ(PWM_IRQn);
-	//NVIC_SetPriority(PWM_IRQn, 0);
-	//NVIC_EnableIRQ(PWM_IRQn);
+	NVIC_DisableIRQ(PWM_IRQn);
+	NVIC_ClearPendingIRQ(PWM_IRQn);
+	NVIC_SetPriority(PWM_IRQn, 0);
+	NVIC_EnableIRQ(PWM_IRQn);
 	
 	/* Enable PWM channels for Motors */
 	pwm_channel_enable(PWM, PIN_PWM_IN1_CHANNEL);
