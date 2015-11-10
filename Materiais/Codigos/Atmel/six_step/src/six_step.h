@@ -65,19 +65,23 @@
 
 /* =============== HEADER USART =============== */
 #define STRING_EOL    "\n\r"
-#define STRING_HEADER	STRING_EOL\
-						"   ACIONAMENTO SIX-STEP DO MOTOR BLDC	"STRING_EOL \
+#define STRING_HEADER		STRING_EOL\
+						"   ACIONAMENTO SIX-STEP DO MOTOR BLDC"STRING_EOL\
 							STRING_EOL\
-						"	Para controlador o duty cicle de acionamento do bldc pode-se utilizar o teclado ou o touch da placa.\n\r"STRING_EOL\
-						"	Para utilizar o teclado:"STRING_EOL\
-						"   Pressione t para apresentar os dados do bldc na tela;"STRING_EOL\
-						"   Pressione a para aumentar o duty-cicle;"STRING_EOL\
-						"   Pressione s para diminuir o duty-cicle;"STRING_EOL\
-						STRING_EOL\
-						"	Para utilizar o touch:"STRING_EOL\
+						"   Para utilizar o teclado:"STRING_EOL\
+						"   Pressione a tecla 'T' para apresentar os dados do bldc na tela;"STRING_EOL\
+						"   Pressione a tecla 'A' para aumentar o duty-cicle;"STRING_EOL\
+						"   Pressione a tecla 'S' para diminuir o duty-cicle;"STRING_EOL\
+						"   Pressione a tecla 'D' para acionamento em forma de rampa;"STRING_EOL\
+						"   Pressione a tecla 'F' para acionamento em forma de degrau;"STRING_EOL\
+						"   Pressione a tecla 'I' para inverter o sentido de rotacao;"STRING_EOL\
+							STRING_EOL\
+						"   Para utilizar o touch:"STRING_EOL\
 						"   Pressione a seta para a direita para aumentar o duty-cicle;"STRING_EOL\
 						"   Pressione a seta para a esquerda para diminuir o duty-cicle;"STRING_EOL\
 						"   Utilize o barcode para aumentar e diminuir o duty-cicle;"STRING_EOL\
+							STRING_EOL\
+
 
 /* =============== QTOUCH =============== */
 /** Qtouch key number */

@@ -30,9 +30,11 @@ uint32_t hall_3 = 0;
 uint8_t phase = 0;
 uint8_t motor_run = 0;
 uint8_t motor_aux = 0;
+uint8_t ensaio = 0;
 
 static bool flag_hab_m = 0;
 static bool sel_rot = 0;
+
 
 /** PWM channel instance for LEDs */
 pwm_channel_t g_pwm_channel;
@@ -101,20 +103,60 @@ void PWM_Handler(void)
 	/* Para utilizar interrupção do pwm configurar e habilitar em six_step.c */
 	
 	static uint32_t ul_count = 0;  /* PWM counter value */
+	static uint32_t ul_count2 = 0;
+	static uint8_t sub = 1; // 1 -> subindo; 0 -> descendo;
+	
 	uint32_t events = pwm_channel_get_interrupt_status(PWM);
 
 	/* Interrupt on PIN_PWM_IN1_CHANNEL */
 	if ((events & (1 << PIN_PWM_IN1_CHANNEL)) == (1 << PIN_PWM_IN1_CHANNEL))
 	{
 		ul_count++;
-		if (ul_count == (PWM_FREQUENCY*10 / (PERIOD_VALUE - INIT_DUTY_VALUE))) {
+		if (ul_count == (PWM_FREQUENCY*10 / (PERIOD_VALUE - INIT_DUTY_VALUE))) // a cada 50ms
+		{
 			ul_count = 0;
+			ul_count2++;
+			
+			/*rotina para verificar se o motor está rodando*/
 			if(motor_aux!=0)
 			{
 				motor_run = 1;
 				motor_aux = 0;
 			}
 			else motor_run = 0;
+			
+			/*rotina para realizar o ensaio 1 - ensaio de rampa */
+			if (ensaio == 1)
+			{
+				if (sub)
+				{
+					if(ul_duty < PERIOD_VALUE) ul_duty++;
+					else sub = 0;
+				}
+				else
+				{
+					if(ul_duty > INIT_DUTY_VALUE) ul_duty--;
+					else sub = 1;
+				}
+			}
+			if (ul_count2 == 20) // a cada 1s
+			{
+				ul_count2 = 0;
+				/*rotina para realizar ensaio 2 - acionamento degrau */
+				if	(ensaio == 2)
+				{
+					if (sub)
+					{
+						if(ul_duty < PERIOD_VALUE) ul_duty = ul_duty + 20;
+						else sub = 0;
+					}
+					else
+					{
+						if(ul_duty > INIT_DUTY_VALUE) ul_duty = ul_duty - 20;
+						else sub = 1;
+					}
+				}
+			}
 		}
 	}
 }
@@ -123,9 +165,6 @@ void Button1_Handler(uint32_t id, uint32_t mask)
 {
 	/*Botão 1 aumenta o duty cicle (ul_duty)*/
 	if (PIN_PUSHBUTTON_1_ID == id && PIN_PUSHBUTTON_1_MASK == mask) {
-
-//		if (ul_duty == 0) flag_hab_m = 1;
-				
 		if(ul_duty < PERIOD_VALUE) ul_duty++;
 		
 	}
@@ -253,39 +292,14 @@ int main(void)
 	configure_buttons();
 	configure_hall();
 
-	/* Disable the watchdog */
 	wdt_disable(WDT);
-
-//	sysclk_init();
-
-//	configure_console();
-
-	/* Output example information */
-//	printf(STRING_HEADER);
-
-	/* Enable PMC clock for key/silder PIOs  */
-
 	pmc_enable_periph_clk(ID_PIOC);
-
-	/* Reset touch sensing */
 	qt_reset_sensing();
-
-	/* Configure the Sensors as keys or Keys With Rotor/Sliders in this function */
 	config_sensors();
-
-	/* Initialise touch sensing */
 	qt_init_sensing();
-
 	/* Set the parameters like recalibration threshold, Max_On_Duration etc in this function by the user */
 	qt_set_parameters();
-
-	/* Configure timer ISR to fire regularly */
 	init_timer_isr();
-
-	/* Address to pass address of user functions */
-	/* This function is called after the library has made capacitive measurements,
-	 * but before it has processed them. The user can use this hook to apply filter
-	 * functions to the measured signal values.(Possibly to fix sensor layout faults) */
 	qt_filter_callback = 0;
 
 	configure_console();
@@ -332,22 +346,45 @@ int main(void)
 		uc_flag = uart_read(CONSOLE_UART, &uc_char);
 		if (!uc_flag) {
 			if (uc_char == 't') {
-				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
-				printf("  hall1 = %lu \r\n", hall_1);
-				printf("  hall2 = %lu \r\n", hall_2);
-				printf("  hall3 = %lu \r\n", hall_3);
-				printf("  phase = %u \r\n\n", phase);
+				printf("   duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
+				printf("   hall1 = %lu \r\n", hall_1);
+				printf("   hall2 = %lu \r\n", hall_2);
+				printf("   hall3 = %lu \r\n", hall_3);
+				printf("   phase = %u \r\n\n", phase);
 			}
 			if (uc_char == 'a'){				
 				if(ul_duty < PERIOD_VALUE) ul_duty++;
-				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
+				printf("   duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 			}
 			if (uc_char == 's'){
 				if(ul_duty > INIT_DUTY_VALUE) ul_duty--;
-				printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
+				printf("   duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
+			}
+			if (uc_char == 'd')
+			{
+				ensaio = 1;
+				printf("   Ensaio de rampa\r\n");
+				printf("   para parar pressione a letra 'P'\r\n");	
+			}
+			if (uc_char == 'f')
+			{
+				ensaio = 2;
+				printf("   Ensaio de degrau\r\n");
+				printf("   para parar pressione a letra 'P'\r\n");
+			}
+			if (uc_char == 'p')
+			{
+				ensaio = 0;
+				ul_duty = 0;
+			}
+			if (uc_char == 'i')
+			{
+				sel_rot = !sel_rot;
+				printf("   Rotacao invertida\r\n");
+				printf("   para parar pressione a letra 'P'\r\n");
 			}
 		}
-
+		
 		if (time_to_measure_touch) {
 
 			/* Clear flag: it's time to measure touch */
@@ -395,7 +432,6 @@ int main(void)
 			old_position = GET_ROTOR_SLIDER_POSITION(0);
 			if (motor_run==0) flag_hab_m = 1;
 			ul_duty = old_position*PERIOD_VALUE/255;
-			printf("  duty cicle = %lu \r\n",ul_duty*100/PERIOD_VALUE);
 		}
 	}
 }
