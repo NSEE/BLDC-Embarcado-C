@@ -1,6 +1,6 @@
 /**
- * Acionamento do BLDC através do método six-step.
- * 
+ * Acionamento do BLDC atraves do metodo six-step com 
+ * leitura de velocidade e utilizacao do qtouch da SAN3N-EK.
  * Leitura de 3 sensores hall por interrupção externa,
  * verificando borda de subida e borda de descida, a
  * cada evento é verificada uma tabela gray onde inf-
