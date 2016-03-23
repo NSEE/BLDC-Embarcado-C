@@ -47,6 +47,7 @@ void inicializacao()
 //funcoes
 void mostra()
 {
+	// declarando variavel auxiliar para contar quantidade de acerto
 	int i;
 	i=0;
 	while(i<=acertos)
