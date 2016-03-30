@@ -51,7 +51,7 @@ PLLFBD = 0x0026
 ?	Fcy  =	20M/2 = 10MIP
 */
 
-
+#define CLOSEDLOOP
 #define FOSC  20000000			// xtal = 8.0Mhz, 20.0Mhz after PLL
 #define FCY  FOSC/2				
 #define MILLISEC FCY/20000		// 1 mSec delay constant
