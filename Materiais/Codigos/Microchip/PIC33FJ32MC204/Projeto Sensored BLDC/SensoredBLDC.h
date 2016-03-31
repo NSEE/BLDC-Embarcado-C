@@ -51,11 +51,12 @@ PLLFBD = 0x0026
 ?	Fcy  =	20M/2 = 10MIP
 */
 
-
+#define CLOSELOOP
 #define FOSC  20000000			// xtal = 8.0Mhz, 20.0Mhz after PLL
 #define FCY  FOSC/2				
 #define MILLISEC FCY/20000		// 1 mSec delay constant
 #define FPWM 39000
+
 
 #define POLEPAIRS		5		// number of pole pairs
 #define HALL_INDEX_R	4		// Hall sensor position index
@@ -73,7 +74,7 @@ PLLFBD = 0x0026
  */
 #define SPEEDMULT	2343750
 #define OFFSET 8
-#define POTMULT 4				// pot to speed ratio
+#define POTMULT 4					// pot to speed ratio
 
 //#define Kps	50					// Kp and Ks terms need to be adjusted
 //#define Kis	1					// as per the motor and load 

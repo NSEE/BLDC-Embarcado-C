@@ -83,6 +83,7 @@ void InitTMR1(void);
 void lockIO(void);
 void unlockIO(void);
 
+
 struct MotorFlags Flags;
 
 unsigned int HallValue;
@@ -134,7 +135,7 @@ int main(void)
 	RPINR7bits.IC2R = 0x02;		// IC2 on RP2/RB2
 	RPINR10bits.IC7R = 0x03;	// IC7 on RP3/RB3
 	lockIO();
- 
+	
 	InitADC10();
 	InitTMR1();
 	InitTMR3();

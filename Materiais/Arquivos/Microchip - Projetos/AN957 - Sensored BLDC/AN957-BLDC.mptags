@@ -1,0 +1,88 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.5.4	//
+!_TAG_REVISION_NAME	MCHPTags	//
+!_TAG_REVISION_VERSION	6.0.1	//
+ActualSpeed	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	48;"	v	line:48
+BAUD::9600	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	78;"	d	line:78
+BRGValue::((FCY/(16*BAUD))-1)	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	79;"	d	line:79
+CLOSEDLOOP	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	60;"	d	line:60
+CR::0x0D	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	80;"	d	line:80
+CalculateDC	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	58;"	p	line:58	file:	signature:(void)
+DelayNmSec	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	202;"	f	line:202	signature:(unsigned int N)
+DelayNmSec	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	53;"	p	line:53	file:	signature:(unsigned int N)
+DesiredSpeed	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	47;"	v	line:47
+Direction	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	100;"	m	line:100	struct:MotorFlags
+DutyCycle	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	51;"	v	line:51
+FCY::FOSC/2	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	62;"	d	line:62
+FNOSC_PRIPLL	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	48;"	v	line:48
+FOSC::20000000	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	61;"	d	line:61
+FPWM::39000	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	64;"	d	line:64
+FWDTEN_OFF	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	50;"	v	line:50
+Flags	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	63;"	v	line:63
+GCP_OFF	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	47;"	v	line:47
+HALL_INDEX_F::5	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	68;"	d	line:68
+HALL_INDEX_R::4	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	67;"	d	line:67
+HallValue	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	65;"	v	line:65
+Hall_Index	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	100;"	l	line:100
+InitADC10	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Init.c	57;"	f	line:57	signature:(void)
+InitADC10	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	52;"	p	line:52	file:	signature:(void)
+InitIC	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Init.c	119;"	f	line:119	signature:(void)
+InitIC	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	57;"	p	line:57	file:	signature:(void)
+InitMCPWM	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Init.c	95;"	f	line:95	signature:(void)
+InitMCPWM	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	54;"	p	line:54	file:	signature:(void)
+InitTMR1	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Init.c	169;"	f	line:169	signature:(void)
+InitTMR1	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	60;"	p	line:60	file:	signature:(void)
+InitTMR3	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Init.c	145;"	f	line:145	signature:(void)
+InitTMR3	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	56;"	p	line:56	file:	signature:(void)
+InitUART	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Init.c	157;"	f	line:157	signature:(void)
+InitUART	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	55;"	p	line:55	file:	signature:(void)
+Kis	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	53;"	v	line:53
+Kps	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	52;"	v	line:52
+LF::0x0A	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	81;"	d	line:81
+MILLISEC::FCY/20000	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	63;"	d	line:63
+MotorFlags	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	97;"	s	line:97
+OFFSET::8	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	91;"	d	line:91
+POLEPAIRS::5	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	66;"	d	line:66
+POSCMD_XT	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	49;"	v	line:49
+POTMULT::4	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	92;"	d	line:92
+RPM	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	71;"	v	line:71
+ResetPowerModule	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	211;"	f	line:211	signature:(void)
+ResetPowerModule	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	59;"	p	line:59	file:	signature:(void)
+RunMotor	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	99;"	m	line:99	struct:MotorFlags
+S3::PORTDbits.RD6	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	70;"	d	line:70
+S4::PORTDbits.RD13	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	71;"	d	line:71
+S5::PORTAbits.RA7	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	72;"	d	line:72
+S6::PORTDbits.RD7	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	73;"	d	line:73
+SPEEDMULT::2343750	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	90;"	d	line:90
+SpeedError	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	49;"	v	line:49
+SpeedIntegral	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	50;"	v	line:50
+SpeedIntegral_n_1	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	50;"	v	line:50
+SpeedProportional	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	50;"	v	line:50
+SpeedString	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	120;"	l	line:120
+StateTableFwd	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	79;"	v	line:79
+StateTableRev	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	81;"	v	line:81
+T1PR1::((FCY/1000)/64)	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	83;"	d	line:83
+UART2_RX_TRIS::TRISFbits.TRISF4	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	76;"	d	line:76
+UART2_TX_TRIS::TRISFbits.TRISF5	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	75;"	d	line:75
+UART_CRLF	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	229;"	f	line:229	signature:(void)
+UART_CRLF	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	61;"	p	line:61	file:	signature:(void)
+UartRPM	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	70;"	v	line:70
+UartRPMarray	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	70;"	v	line:70
+_ADC1Interrupt	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	67;"	f	line:67	signature:(void)
+_IC1Interrupt	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	98;"	f	line:98	signature:(void)
+_IC2Interrupt	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	142;"	f	line:142	signature:(void)
+_IC3Interrupt	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	167;"	f	line:167	signature:(void)
+_T1Interrupt	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\Interrupts.c	191;"	f	line:191	signature:(void)
+i	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	114;"	l	line:114
+i	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	213;"	l	line:213
+j	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	204;"	l	line:204
+main	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	86;"	f	line:86	signature:(void)
+polecount	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	68;"	v	line:68
+rpmBalance	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	71;"	v	line:71
+timer3avg	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	67;"	v	line:67
+timer3value	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.c	66;"	v	line:66
+unused	C:\Documents and Settings\zambadj\Desktop\AN957_33F_710\SensoredBLDC.h	101;"	m	line:101	struct:MotorFlags

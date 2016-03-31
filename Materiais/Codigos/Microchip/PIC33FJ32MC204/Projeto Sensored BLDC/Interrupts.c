@@ -38,6 +38,7 @@
 
 #include "p33FJ32MC204.h"
 #include "SensoredBLDC.h"
+
 int DesiredSpeed;
 int ActualSpeed;
 int SpeedError;
@@ -105,7 +106,7 @@ Overview:		This interrupt represents Hall A ISR.
 		Hall_Index = HALL_INDEX_R;
 		}
 		
-// The code below is uses TMR3 to calculate the speed of the rotor
+	// The code below is uses TMR3 to calculate the speed of the rotor
 	if (HallValue == Hall_Index)  // has the same position been sensed?
 		if (polecount++ == POLEPAIRS)  //has one mech rev elasped?
 		{								// yes then read timer 3
