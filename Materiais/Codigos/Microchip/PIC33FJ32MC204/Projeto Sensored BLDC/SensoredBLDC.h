@@ -51,16 +51,16 @@ PLLFBD = 0x0026
 ?	Fcy  =	20M/2 = 10MIP
 */
 
-#define CLOSELOOP
+#define CLOSEDLOOP
 #define FOSC  20000000			// xtal = 8.0Mhz, 20.0Mhz after PLL
 #define FCY  FOSC/2				
 #define MILLISEC FCY/20000		// 1 mSec delay constant
 #define FPWM 39000
 
 
-#define POLEPAIRS		5		// number of pole pairs
-#define HALL_INDEX_R	4		// Hall sensor position index
-#define HALL_INDEX_F	5		// Hall sensor position index
+#define POLEPAIRS		4		// number of pole pairs
+#define HALL_INDEX_R	3		// Hall sensor position index
+#define HALL_INDEX_F	4		// Hall sensor position index
 
 #define S2	PORTAbits.RA8
 #define S3	PORTBbits.RB4
@@ -95,3 +95,6 @@ extern unsigned char polecount;
 extern unsigned int StateTableFwd[];
 extern unsigned int StateTableRev[];
 
+// UART
+#define BAUDRATE 9600
+#define BRGVAL ((FCY/BAUDRATE)/16)-1

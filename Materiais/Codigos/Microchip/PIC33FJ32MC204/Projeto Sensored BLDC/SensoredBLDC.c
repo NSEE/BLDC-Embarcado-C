@@ -83,6 +83,8 @@ void InitTMR1(void);
 void lockIO(void);
 void unlockIO(void);
 
+void InitUART(void);
+
 
 struct MotorFlags Flags;
 
@@ -142,6 +144,8 @@ int main(void)
 	timer3avg = 0;
 	InitMCPWM();
 	InitIC();
+
+	InitUART();
 	Flags.Direction = 1;				// initialize direction CW
 
 	for(i=0;i<1000;i++);

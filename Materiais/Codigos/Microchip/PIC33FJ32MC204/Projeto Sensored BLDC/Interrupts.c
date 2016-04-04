@@ -189,4 +189,8 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 #endif								// in closed loop algorithm
 
 	IFS0bits.T1IF = 0;
+
+
+	//Test UART
+	U1TXREG = 'x';
 }

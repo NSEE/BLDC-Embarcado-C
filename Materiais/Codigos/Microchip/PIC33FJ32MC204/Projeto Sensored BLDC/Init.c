@@ -141,7 +141,7 @@ void InitTMR3(void)
 }
 
 /************************************************************************
-Initialize the UART2 for BAUD = 9600, no parity, 1 stop
+TMR1
 
 *************************************************************************/
 
@@ -157,6 +157,28 @@ void InitTMR1(void)
 	T1CONbits.TON = 1;		// turn on timer 1 
 	IFS0bits.T1IF = 0;
 	IEC0bits.T1IE = 1;
+	return;
+}
+
+/************************************************************************
+Initialize the UART2 for BAUD = 9600, no parity, 1 stop
+
+*************************************************************************/
+
+void InitUART(void)
+{
+	// 
+	// 
+	
+	U1MODEbits.STSEL = 0; // 1 Stop bit
+	U1MODEbits.PDSEL = 0; // No Parity, 8 data bits
+	U1MODEbits.ABAUD = 0; // Auto-Baud Disabled
+	U1MODEbits.BRGH = 0; // Low Speed mode
+	U1BRG = BRGVAL; // BAUD Rate Setting for 9600
+//	U1STAbits.UTXISEL0 = 0; // Interrupt after one TX Character is transmitted
+//	U1STAbits.UTXISEL1 = 0;
+	U1MODEbits.UARTEN = 1; // Enable UART
+	U1STAbits.UTXEN = 1; // Enable UART TX
 	return;
 }
 
