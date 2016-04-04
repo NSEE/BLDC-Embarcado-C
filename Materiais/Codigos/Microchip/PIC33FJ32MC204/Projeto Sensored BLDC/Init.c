@@ -167,8 +167,8 @@ Initialize the UART2 for BAUD = 9600, no parity, 1 stop
 
 void InitUART(void)
 {
-	// 
-	// 
+	//inicialização da UART
+	//sem interrupções
 	
 	U1MODEbits.STSEL = 0; // 1 Stop bit
 	U1MODEbits.PDSEL = 0; // No Parity, 8 data bits
