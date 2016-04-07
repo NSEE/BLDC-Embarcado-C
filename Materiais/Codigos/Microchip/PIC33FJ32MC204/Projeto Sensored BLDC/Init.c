@@ -38,6 +38,8 @@
 
 #include "p33FJ32MC204.h"
 #include "SensoredBLDC.h"
+#include "C:\Program Files\Microchip\MPLAB C30\support\h\peripheral_30F_24H_33F\uart.h"	//biblioteca do C30 com funcoes para UART	
+
 
 /*******************************************************************
 		Below is the code required to setup the ADC registers for :
@@ -102,12 +104,15 @@ void InitMCPWM(void)
 }
 /*********************************************************************
   Function:        void InitICandCN(void)
-  Overview:        Configure Hall sensor inputs, one change notification and 
+
+  Overview:        Configure Hall sensor inputs, one change notification and 
                    two input captures. on IC7 the actual capture value is used
                    for further period calculation
-  Note:            None.
+
+  Note:            None.
 ********************************************************************/
-void InitIC(void)
+
+void InitIC(void)
 {
 	//Hall A -> IC1. Hall A is used for Speed measurement and commutation.
 	//Hall B -> IC2. Hall B is only used for commutation.
@@ -167,18 +172,17 @@ Initialize the UART2 for BAUD = 9600, no parity, 1 stop
 
 void InitUART(void)
 {
-	//inicialização da UART
-	//sem interrupções
+    //inicializacao da UART
+	//sem interrupcoes
 	
 	U1MODEbits.STSEL = 0; // 1 Stop bit
 	U1MODEbits.PDSEL = 0; // No Parity, 8 data bits
 	U1MODEbits.ABAUD = 0; // Auto-Baud Disabled
 	U1MODEbits.BRGH = 0; // Low Speed mode
 	U1BRG = BRGVAL; // BAUD Rate Setting for 9600
-//	U1STAbits.UTXISEL0 = 0; // Interrupt after one TX Character is transmitted
-//	U1STAbits.UTXISEL1 = 0;
 	U1MODEbits.UARTEN = 1; // Enable UART
 	U1STAbits.UTXEN = 1; // Enable UART TX
+	return;
 	return;
 }
 

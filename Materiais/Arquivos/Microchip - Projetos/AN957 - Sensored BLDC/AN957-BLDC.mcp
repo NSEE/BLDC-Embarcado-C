@@ -30,6 +30,8 @@ file_002=.
 file_003=.
 file_004=.
 file_005=.
+file_006=.
+file_007=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -37,6 +39,8 @@ file_002=no
 file_003=no
 file_004=no
 file_005=no
+file_006=no
+file_007=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -44,13 +48,17 @@ file_002=no
 file_003=no
 file_004=no
 file_005=no
+file_006=no
+file_007=no
 [FILE_INFO]
 file_000=C:\Users\Bruno Marinotti\Documents\GitHub\BLDC-Embarcado-C\Materiais\Codigos\Microchip\PIC33FJ32MC204\Projeto Sensored BLDC\Init.c
 file_001=C:\Users\Bruno Marinotti\Documents\GitHub\BLDC-Embarcado-C\Materiais\Codigos\Microchip\PIC33FJ32MC204\Projeto Sensored BLDC\Interrupts.c
 file_002=C:\Users\Bruno Marinotti\Documents\GitHub\BLDC-Embarcado-C\Materiais\Codigos\Microchip\PIC33FJ32MC204\Projeto Sensored BLDC\SensoredBLDC.c
 file_003=C:\Program Files\Microchip\MPLAB C30\support\h\p33FJ32MC204.h
 file_004=C:\Users\Bruno Marinotti\Documents\GitHub\BLDC-Embarcado-C\Materiais\Codigos\Microchip\PIC33FJ32MC204\Projeto Sensored BLDC\SensoredBLDC.h
-file_005=C:\Program Files\Microchip\MPLAB C30\support\gld\p33FJ32MC204.gld
+file_005=C:\Program Files\Microchip\MPLAB C30\support\h\peripheral_30F_24H_33F\uart.h
+file_006=C:\Program Files\Microchip\MPLAB C30\lib\libp33FJ32MC204-coff.a
+file_007=C:\Program Files\Microchip\MPLAB C30\support\gld\p33FJ32MC204.gld
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

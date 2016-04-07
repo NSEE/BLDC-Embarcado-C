@@ -44,6 +44,8 @@
 
 #include "p33FJ32MC204.h"
 #include "SensoredBLDC.h"
+#include "C:\Program Files\Microchip\MPLAB C30\support\h\peripheral_30F_24H_33F\uart.h"			//biblioteca do C30 com funcoes para UART
+
 /******************************************************************************/
 /* Configuration bits                                                         */
 /******************************************************************************/
@@ -83,8 +85,10 @@ void InitTMR1(void);
 void lockIO(void);
 void unlockIO(void);
 
+//prototipagens das funcoes que tratam a UART
 void InitUART(void);
-
+void conv_num2cdu(float valor);
+void TXUART();
 
 struct MotorFlags Flags;
 
@@ -92,6 +96,7 @@ unsigned int HallValue;
 unsigned int timer3value;
 unsigned int timer3avg;
 unsigned char polecount;
+
  
 char *UartRPM,UartRPMarray[5];
 int RPM, rpmBalance;
@@ -136,6 +141,7 @@ int main(void)
 	RPINR7bits.IC1R = 0x01;		// IC1 on RP1/RB1
 	RPINR7bits.IC2R = 0x02;		// IC2 on RP2/RB2
 	RPINR10bits.IC7R = 0x03;	// IC7 on RP3/RB3
+	RPOR4bits.RP9R = 0x03;		// TX on RP9/RB9
 	lockIO();
 	
 	InitADC10();
@@ -251,3 +257,4 @@ asm volatile ("mov #OSCCON,w1 \n"
 				"mov.b w3,[w1] \n"
 				"bclr OSCCON, #6");
 }
+

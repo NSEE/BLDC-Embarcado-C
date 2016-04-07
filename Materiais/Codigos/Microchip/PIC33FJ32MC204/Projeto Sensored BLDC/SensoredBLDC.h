@@ -58,23 +58,24 @@ PLLFBD = 0x0026
 #define FPWM 39000
 
 
-#define POLEPAIRS		4		// number of pole pairs
-#define HALL_INDEX_R	3		// Hall sensor position index
-#define HALL_INDEX_F	4		// Hall sensor position index
+#define POLEPAIRS		4		// number of pole pairs				//ajustado para motor de testes do cube sat - CORRETO
+#define HALL_INDEX_R	2		// Hall sensor position index		//ajustado para motor de testes do cube sat - CORRETO
+#define HALL_INDEX_F	4		// Hall sensor position index		//ajustado para motor de testes do cube sat - CORRETO
 
 #define S2	PORTAbits.RA8
 #define S3	PORTBbits.RB4
 
-#define T1PR1 ((FCY/1000)/64)
+//#define T1PR1 ((FCY/1000)/64)
+#define T1PR1 ((FCY/100)/64)	
 
 /* Based on using the internal Fcy and Timer 3 prescaler of 256
  * Fcy/256 = 10M/256 = 39062.5 ticks/sec
  * or, 2343750 ticks = 1RPM
- * => RPM would be 2343750/T3ticks
+ * => RPM would be 2343750/T3 ticks
  */
 #define SPEEDMULT	2343750
 #define OFFSET 8
-#define POTMULT 4					// pot to speed ratio
+#define POTMULT 8					// pot to speed ratio				//aumentada para o motor de testes do cube sat
 
 //#define Kps	50					// Kp and Ks terms need to be adjusted
 //#define Kis	1					// as per the motor and load 
@@ -94,6 +95,7 @@ extern unsigned char polecount;
 
 extern unsigned int StateTableFwd[];
 extern unsigned int StateTableRev[];
+
 
 // UART
 #define BAUDRATE 9600
