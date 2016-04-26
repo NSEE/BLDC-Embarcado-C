@@ -116,7 +116,7 @@ void InitIC(void)
 {
 	//Hall A -> IC1. Hall A is used for Speed measurement and commutation.
 	//Hall B -> IC2. Hall B is only used for commutation.
-	//Hall C -> IC3. Hall C is only used for commutation.
+	//Hall C -> IC7. Hall C is only used for commutation.
 
 	TRISB |= 0x000E;	// Ensure that hall connections are inputs 
 	
@@ -178,8 +178,8 @@ void InitUART(void)
 	U1MODEbits.STSEL = 0; // 1 Stop bit
 	U1MODEbits.PDSEL = 0; // No Parity, 8 data bits
 	U1MODEbits.ABAUD = 0; // Auto-Baud Disabled
-	U1MODEbits.BRGH = 0; // Low Speed mode
-	U1BRG = BRGVAL; // BAUD Rate Setting for 9600
+	U1MODEbits.BRGH = 1; // High Speed mode (x4)
+	U1BRG = BRGVAL; // BAUD Rate Setting for 56000
 	U1MODEbits.UARTEN = 1; // Enable UART
 	U1STAbits.UTXEN = 1; // Enable UART TX
 	return;

@@ -45,6 +45,7 @@
 #include "p33FJ32MC204.h"
 #include "SensoredBLDC.h"
 #include "C:\Program Files\Microchip\MPLAB C30\support\h\peripheral_30F_24H_33F\uart.h"			//biblioteca do C30 com funcoes para UART
+#include <stdlib.h>
 
 /******************************************************************************/
 /* Configuration bits                                                         */
@@ -87,8 +88,8 @@ void unlockIO(void);
 
 //prototipagens das funcoes que tratam a UART
 void InitUART(void);
-void conv_num2cdu(float valor);
-void TXUART();
+void TXUARTopen();
+void TXUARTclosed();
 
 struct MotorFlags Flags;
 
@@ -100,6 +101,7 @@ unsigned char polecount;
  
 char *UartRPM,UartRPMarray[5];
 int RPM, rpmBalance;
+
 
 /*************************************************************
 	Low side driver table is as below.  In the StateLoTableClk

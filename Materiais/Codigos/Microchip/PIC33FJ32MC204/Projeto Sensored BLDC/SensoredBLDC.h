@@ -52,10 +52,11 @@ PLLFBD = 0x0026
 */
 
 #define CLOSEDLOOP
+
 #define FOSC  20000000			// xtal = 8.0Mhz, 20.0Mhz after PLL
 #define FCY  FOSC/2				
 #define MILLISEC FCY/20000		// 1 mSec delay constant
-#define FPWM 39000
+#define FPWM 39000				// in Hz frequencia das PWMs
 
 
 #define POLEPAIRS		4		// number of pole pairs				//ajustado para motor de testes do cube sat - CORRETO
@@ -73,7 +74,6 @@ PLLFBD = 0x0026
  * or, 2343750 ticks = 1RPM
  * => RPM would be 2343750/T3 ticks
  */
-#define SPEEDMULT	2343750
 #define OFFSET 8
 #define POTMULT 8					// pot to speed ratio				//aumentada para o motor de testes do cube sat
 
@@ -98,5 +98,5 @@ extern unsigned int StateTableRev[];
 
 
 // UART
-#define BAUDRATE 9600
-#define BRGVAL ((FCY/BAUDRATE)/16)-1
+#define BAUDRATE 56000					//ajustado para RATE de 56.000 bps
+#define BRGVAL ((FCY/BAUDRATE)/4)-1		//ajustado para High Speed Mode

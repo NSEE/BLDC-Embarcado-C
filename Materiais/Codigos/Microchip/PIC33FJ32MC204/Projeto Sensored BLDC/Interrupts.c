@@ -54,6 +54,11 @@ unsigned int Kis = 2000;					// as per the motor and load
 unsigned char milhar, centena, dezena, unidade;
 int contador;
 
+//variaveis para mostrar dados do Duty Cycle
+float dutypercentage;
+float var1,var2;
+char p='%';
+
 /*********************************************************************
 Function:		void __attribute__((interrupt, no_auto_psv)) _ADC1Interrupt (void)
 
@@ -69,11 +74,11 @@ Overview:		For Open loop, the ADC interrupt loads the PDCx
 void __attribute__((interrupt, no_auto_psv)) _ADC1Interrupt (void)
 {
   	if (Flags.RunMotor)
-    #ifdef CLOSEDLOOP					// For closed loop, save
-		DesiredSpeed = ADC1BUF0 * POTMULT;	// value for speed control
-    #else
+    	
+	DesiredSpeed = ADC1BUF0 * POTMULT;	// value for speed control
+    #ifndef CLOSEDLOOP
 	{									// For open loop control,
-		P1DC1 =  (ADC1BUF0 >> 1);			// get value,
+		P1DC1 =  (ADC1BUF0 >> 1);			// get value,				valor maximo = 1023 -> 100%
 		P1DC2 = P1DC1;					// and load all three PWM
 		P1DC3 = P1DC1;					// duty cycles
 	}
@@ -121,7 +126,7 @@ void __attribute__((interrupt, no_auto_psv)) _IC1Interrupt (void)
 		{								// yes then read timer 3
 			timer3value = TMR3;
 			TMR3 = 0;
-			timer3avg = ((timer3avg + timer3value) >> 1);
+			timer3avg = ((timer3avg + timer3value) >> 1);			//shift para direita em 1 == dividir por 2
 			polecount = 1;
 		}
 }
@@ -183,104 +188,75 @@ Overview:		This interrupt a 1ms interrupt and outputs a square
 
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt (void)
 {
-#ifdef CLOSEDLOOP
 	ActualSpeed = SPEEDMULT/timer3avg;
-	SpeedError = DesiredSpeed - ActualSpeed;
-	SpeedProportional = (int)(((long)Kps*(long)SpeedError) >> 15);
-	SpeedIntegral = SpeedIntegral_n_1 + (int)(((long)Kis*(long)SpeedError) >> 15);
-	
-	if (SpeedIntegral < 0)
-		SpeedIntegral = 0;
-	else if (SpeedIntegral > 32767)
-		SpeedIntegral = 32767;
-	SpeedIntegral_n_1 = SpeedIntegral;
-	DutyCycle = SpeedIntegral + SpeedProportional;
-	if (DutyCycle < 0)
-		DutyCycle = 0;
-	else if (DutyCycle > 32767)
-		DutyCycle = 32767;
-	
-	PDC1 = (int)(((long)(PTPER*2)*(long)DutyCycle) >> 15);
-	PDC2 = PDC1;
-	PDC3 = PDC1;
-#endif								// in closed loop algorithm
-	
-	IFS0bits.T1IF = 0;
-	
+	#ifdef CLOSEDLOOP
+		SpeedError = DesiredSpeed - ActualSpeed;
+		SpeedProportional = (int)(((long)Kps*(long)SpeedError) >> 15);
+		SpeedIntegral = SpeedIntegral_n_1 + (int)(((long)Kis*(long)SpeedError) >> 15);			//shift de 15 para direita == dividir valor por 32768		
+		if (SpeedIntegral < 0)
+			SpeedIntegral = 0;
+		else if (SpeedIntegral > 32767)
+			SpeedIntegral = 32767;
+		SpeedIntegral_n_1 = SpeedIntegral;
+		DutyCycle = SpeedIntegral + SpeedProportional;
+		if (DutyCycle < 0)
+			DutyCycle = 0;
+		else if (DutyCycle > 32767)
+			DutyCycle = 32767;
+		PDC1 = (int)(((long)(PTPER*2)*(long)DutyCycle)>>15);    //PTPER = FCY/FPWM - 1 = 10.000.000/39.000 -1
+		PDC2 = PDC1;											//PDC valor maximo = 510
+		PDC3 = PDC1;										
+	#else				//calculo do Duty Cycle somente em malha aberta
+		var1=PTPER;
+		var2=ADC1BUF0;
+		dutypercentage=(var1*4*var2)/0x3FF/10/1.02;
+	#endif
 	
 	//implementacao para a UART
 	if(Flags.RunMotor == 0||ADC1BUF0<13)
 	{	
 		ActualSpeed = 0;			//zera a velocidade atual se o motor estiver parado (botao nao apertado ou pot no minimo)
-		SpeedError=0;
 	}
 	//passagem de dados pela UART
 	contador++;
-	if(contador>33)			//delay de 1s para cada ciclo completo da uart (i==3)
+	if(contador == 33)			//delay de 33ms para cada ciclo completo da uart
 	{
-		TXUART();
+		#ifndef CLOSEDLOOP
+			TXUARTopen();
+		#else
+			TXUARTclosed();
+		#endif
 		contador=0;
 	}
+	
+	IFS0bits.T1IF = 0;
 }
 
-//divisor de bits, passa as bases de 10 uma por vez
-void conv_num2cdu(float valor)
+
+//Transmissao pela UART
+void TXUARTopen()
 {
-	milhar=0;
-	centena = 0;
-	dezena = 0;
-	unidade = 0;
-	
-	while((valor-=1000) >= 0){
-		milhar++;
-	}
-	valor= valor+1000;
-	while((valor-=100) >= 0){
-		centena++;
-	}
-	valor = valor+100;
-	while((valor-=10) >= 0){
-		dezena++;
-	}
-	unidade = valor+10;
+	char buffertx[100];
+	sprintf(buffertx, "ADC : %X \n", ADC1BUF0);
+	putsUART1(buffertx);
+	sprintf(buffertx, "SPD : %i \n", ActualSpeed);
+	putsUART1(buffertx);
+	sprintf(buffertx, "Duty Cycle : %.3f%c \n", dutypercentage, p);
+	putsUART1(buffertx);
+	sprintf(buffertx, "\n");
+	putsUART1(buffertx);
 }
 
-//Transmite pela UART
-void TXUART()
+void TXUARTclosed()
 {
-	
-	if(i==1)
-	{	
-		if (0<ActualSpeed||ActualSpeed<9999)			//valor da Velocidade Real
-		{
-			conv_num2cdu(ActualSpeed);
-			U1TXREG=milhar+0x30;
-			U1TXREG=centena+0x030;
-			U1TXREG=dezena+0x30;
-			U1TXREG=unidade+0x30;
-			putsUART1(" +");
-		}
-		else
-			U1TXREG = 'x';
-	}
-	else if(i==2)
-	{	
-		if (0<ActualSpeed||ActualSpeed<9999)			
-		{	
-			putsUART1(" ");
-			conv_num2cdu(SpeedError);					//valor do erro (Vel. segundo o potenciometro - Vel. Real)
-			U1TXREG=milhar+0x30;
-			U1TXREG=centena+0x030;
-			U1TXREG=dezena+0x30;
-			U1TXREG=unidade+0x30;
-		}
-		else
-			U1TXREG = 'x';
-	}
-	else
-		putsUART1("\r\n");
-	if(i==1){i++;}
-	else if(i==2){i++;}
-	else{i=1;}
+	char buffertx[100];
+	sprintf(buffertx, "ADC : %X \n", ADC1BUF0);
+	putsUART1(buffertx);
+	sprintf(buffertx, "SPD : %i \n", ActualSpeed);
+	putsUART1(buffertx);
+	sprintf(buffertx, "Set-Point : %i \n", DesiredSpeed);
+	putsUART1(buffertx);
+	sprintf(buffertx, "\n");
+	putsUART1(buffertx);
 }
 
